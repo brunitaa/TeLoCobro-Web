@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signOutRequest } from "../../api/auth";
+import { useAuth } from "../../context/authContext";
 import {
   Home,
   Building2,
@@ -11,14 +12,11 @@ import {
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
-    try {
-      await signOutRequest();
-      navigate("/"); 
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
+    await logout();
+    navigate("/");
   };
 
   return (

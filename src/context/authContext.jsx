@@ -6,6 +6,7 @@ import {
   confirmAccountRequest,
   forgotPasswordRequest,
   resetPasswordRequest,
+  signOutRequest,
 } from "../api/auth";
 
 const AuthContext = createContext();
@@ -65,11 +66,17 @@ export const AuthProvider = ({ children }) => {
   }
 };
 
-  const logout = () => {
-    // No necesitas eliminar cookie desde aquí porque es httpOnly
+  const logout = async () => {
+  try {
+    await signOutRequest(); // Llama al backend para eliminar la cookie
+  } catch (error) {
+    console.error("Logout error:", error.response?.data);
+  } finally {
     setUser(null);
     setIsAuthenticated(false);
-  };
+    setLoading(false);
+  }
+};
 
   const confirmAccount = async ({ email, otp }) => {
     try {

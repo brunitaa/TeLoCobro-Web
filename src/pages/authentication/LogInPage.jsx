@@ -22,9 +22,9 @@ export function LoginPage() {
   const { signin, errors: loginErrors, isAuthenticated } = useAuth();
 
   const navigate = useNavigate();
-
-  const onSubmit = (data) => signin(data);
-
+  const onSubmit = async (data) => {
+    await signin(data);
+  };
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
