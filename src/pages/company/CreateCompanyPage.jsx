@@ -3,7 +3,7 @@ import { useCompany } from "../../context/companyContext";
 import { useLocation } from "../../context/locationContext";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
-//proximamente ver si se puede hacer una clase que haga todo esto
+import { useNavigate } from "react-router-dom";
 
 const CompanyRegistrationPage = () => {
   const { addCompany, loading } = useCompany();
@@ -18,6 +18,8 @@ const CompanyRegistrationPage = () => {
     selectedState,
     loading: locationLoading,
   } = useLocation();
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -57,6 +59,7 @@ const CompanyRegistrationPage = () => {
     try {
       await addCompany(formData);
       alert("Compañía registrada con éxito");
+      navigate("/view-company");
     } catch (error) {
       console.error("Error al registrar la compañía:", error);
       alert("Hubo un error al registrar la compañía");
