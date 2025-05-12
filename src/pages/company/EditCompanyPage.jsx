@@ -30,7 +30,6 @@ const EditCompanyPage = () => {
     city_id: "",
   });
 
-  // Precargar datos de la compañía y país
   useEffect(() => {
     const company = companies[0];
     if (company) {
@@ -51,7 +50,6 @@ const EditCompanyPage = () => {
     }
   }, [companies, countries, setSelectedCountry]);
 
-  // Precargar estado
   useEffect(() => {
     const company = companies[0];
     if (company && company.location?.state && states.length > 0) {
@@ -64,7 +62,6 @@ const EditCompanyPage = () => {
     }
   }, [states, companies, setSelectedState]);
 
-  // Precargar ciudad
   useEffect(() => {
     const company = companies[0];
     if (company && company.location?.city && cities.length > 0) {
@@ -117,9 +114,10 @@ const EditCompanyPage = () => {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="ml-64 w-full p-10 min-h-screen bg-gray-50">
-        <h1 className="text-2xl font-bold mb-6">Editar Compañía</h1>
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl">
+      <main className="ml-64 w-full min-h-screen flex items-center justify-center bg-gray-50 p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl w-full">
+          <h1 className="text-2xl font-bold mb-6 text-center">Editar Compañía</h1>
+
           <Input
             name="name"
             label="Nombre"
@@ -144,8 +142,8 @@ const EditCompanyPage = () => {
             value={formData.description}
             onChange={handleChange}
           />
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* País */}
             <select
               className="p-3 rounded-lg bg-gray-50 border border-gray-300"
               onChange={handleCountryChange}
@@ -159,7 +157,6 @@ const EditCompanyPage = () => {
               ))}
             </select>
 
-            {/* Estado */}
             <select
               className="p-3 rounded-lg bg-gray-50 border border-gray-300"
               onChange={handleStateChange}
@@ -174,7 +171,6 @@ const EditCompanyPage = () => {
               ))}
             </select>
 
-            {/* Ciudad */}
             <select
               name="city_id"
               className="p-3 rounded-lg bg-gray-50 border border-gray-300"
@@ -190,6 +186,7 @@ const EditCompanyPage = () => {
               ))}
             </select>
           </div>
+
           <Button
             type="submit"
             label={loading || locationLoading ? "Actualizando..." : "Actualizar"}
