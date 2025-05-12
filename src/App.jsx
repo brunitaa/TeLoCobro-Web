@@ -24,7 +24,6 @@ function App() {
       <LocationProvider>
         <CompanyProvider>
           <BrowserRouter>
-            <main className="container content-container mx-auto px-10 md:px-0">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -39,7 +38,6 @@ function App() {
                   <Route path="/dashboard" element={<DashBoardPage />} />
                 </Route>
               </Routes>
-            </main>
           </BrowserRouter>
         </CompanyProvider>
       </LocationProvider>
