@@ -29,7 +29,7 @@ export function LoginPage() {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <Card className="p-8 shadow-lg rounded-xl bg-white w-full max-w-md mx-auto">
