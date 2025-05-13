@@ -31,11 +31,11 @@ function App() {
                 <Route path="/confirm-account" element={<ConfirmAccountPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route path="/register-company" element={<CompanyRegistrationPage />} />
-                <Route path="/view-company" element={<ViewCompanyPage />} />
-                <Route path="/edit-company" element={<EditCompanyPage />} />
                 <Route element={<ProtectedRoute />}>
-                  <Route path="/dashboard" element={<DashBoardPage />} />
+                    <Route path="/register-company" element={<CompanyRegistrationPage />} />
+                    <Route path="/view-company" element={<ViewCompanyPage />} />
+                    <Route path="/edit-company" element={<EditCompanyPage />} />
+                    <Route path="/dashboard" element={<DashBoardPage />} />
                 </Route>
               </Routes>
           </BrowserRouter>
