@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react"
 import { useCompany } from "../../context/companyContext";
 import { useLocation } from "../../context/locationContext";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import DashboardLayout from "../../layouts/DashboardLayout";
 
 const CompanyRegistrationPage = () => {
   const { addCompany, loading } = useCompany();
@@ -28,9 +29,6 @@ const CompanyRegistrationPage = () => {
     description: "",
     city_id: "",
   });
-
-  useEffect(() => {
-  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,87 +65,91 @@ const CompanyRegistrationPage = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-6">Registrar Compañía</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          name="name"
-          label="Nombre"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <Input
-          name="nit"
-          label="NIT"
-          value={formData.nit}
-          onChange={handleChange}
-        />
-        <Input
-          name="legal_name"
-          label="Razón Social"
-          value={formData.legal_name}
-          onChange={handleChange}
-        />
-        <Input
-          name="description"
-          label="Descripción"
-          value={formData.description}
-          onChange={handleChange}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* País */}
-          <select
-            className="p-3 rounded-lg bg-gray-50 border border-gray-300"
-            onChange={handleCountryChange}
-            value={selectedCountry || ""}
-          >
-            <option value="">País</option>
-            {countries.map((country) => (
-              <option key={country._id} value={country._id}>
-                {country.name}
-              </option>
-            ))}
-          </select>
+    <DashboardLayout>
+      <div className="max-w-xl mx-auto mt-10">
+        <h1 className="text-2xl font-bold mb-6">Registrar Compañía</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            name="name"
+            label="Nombre"
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <Input
+            name="nit"
+            label="NIT"
+            value={formData.nit}
+            onChange={handleChange}
+          />
+          <Input
+            name="legal_name"
+            label="Razón Social"
+            value={formData.legal_name}
+            onChange={handleChange}
+          />
+          <Input
+            name="description"
+            label="Descripción"
+            value={formData.description}
+            onChange={handleChange}
+          />
 
-          {/* Estado */}
-          <select
-            className="p-3 rounded-lg bg-gray-50 border border-gray-300"
-            onChange={handleStateChange}
-            value={selectedState || ""}
-            disabled={!states.length}
-          >
-            <option value="">Estado</option>
-            {states.map((state) => (
-              <option key={state._id} value={state._id}>
-                {state.name}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* País */}
+            <select
+              className="p-3 rounded-lg bg-gray-50 border border-gray-300"
+              onChange={handleCountryChange}
+              value={selectedCountry || ""}
+            >
+              <option value="">País</option>
+              {countries.map((country) => (
+                <option key={country._id} value={country._id}>
+                  {country.name}
+                </option>
+              ))}
+            </select>
 
-          {/* Ciudad */}
-          <select
-            name="city_id"
-            className="p-3 rounded-lg bg-gray-50 border border-gray-300"
-            onChange={handleCityChange}
-            value={formData.city_id || ""}
-            disabled={!cities.length}
-          >
-            <option value="">Ciudad</option>
-            {cities.map((city) => (
-              <option key={city._id} value={city._id}>
-                {city.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <Button
-          type="submit"
-          label={loading || locationLoading ? "Registrando..." : "Registrar"}
-          disabled={loading || locationLoading}
-          className="w-full"
-        />
-      </form>
-    </div>
+            {/* Estado */}
+            <select
+              className="p-3 rounded-lg bg-gray-50 border border-gray-300"
+              onChange={handleStateChange}
+              value={selectedState || ""}
+              disabled={!states.length}
+            >
+              <option value="">Estado</option>
+              {states.map((state) => (
+                <option key={state._id} value={state._id}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Ciudad */}
+            <select
+              name="city_id"
+              className="p-3 rounded-lg bg-gray-50 border border-gray-300"
+              onChange={handleCityChange}
+              value={formData.city_id || ""}
+              disabled={!cities.length}
+            >
+              <option value="">Ciudad</option>
+              {cities.map((city) => (
+                <option key={city._id} value={city._id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <Button
+            type="submit"
+            label={loading || locationLoading ? "Registrando..." : "Registrar"}
+            disabled={loading || locationLoading}
+            className="w-full"
+          />
+        </form>
+      </div>
+    </DashboardLayout>
   );
 };
 

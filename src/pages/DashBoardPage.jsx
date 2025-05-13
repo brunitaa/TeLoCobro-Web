@@ -1,24 +1,14 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 function DashBoardPage() {
-  const navigate = useNavigate();
-
-  const handleCreateCompany = () => {
-    navigate("/register-company"); // Redirige a la página de creación de compañías
-  };
-
   return (
-    <section className="bg-red-500 flex flex-col justify-center items-center h-screen">
-      <h1 className="text-white text-3xl mb-6">DASHBOARD!</h1>
-      <button
-        onClick={handleCreateCompany}
-        className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-      >
-        Crear Compañía
-      </button>
-    </section>
-
+    <DashboardLayout>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
+      <p className="text-gray-600">
+        Bienvenido al panel de control. Usa la barra lateral para navegar por las funcionalidades disponibles.
+      </p>
+    </DashboardLayout>
   );
 }
 

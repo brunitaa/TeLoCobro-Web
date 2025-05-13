@@ -1,5 +1,4 @@
 import React, { useEffect, createContext, useContext, useState } from "react";
-import Cookies from "js-cookie";
 import {
   loginRequest,
   registerRequest,
@@ -7,6 +6,7 @@ import {
   confirmAccountRequest,
   forgotPasswordRequest,
   resetPasswordRequest,
+  signOutRequest,
 } from "../api/auth";
 
 const AuthContext = createContext();
@@ -53,21 +53,30 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signin = async (userData) => {
-    try {
-      const res = await loginRequest(userData);
-      setUser(res.data);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error("Signin error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.message));
-    }
-  };
+  try {
+    const res = await loginRequest(userData);
+    // Ya se setea la cookie en el backend; asumimos éxito.
+    setIsAuthenticated(true);
+    setUser(res.data?.user || null);
+  } catch (error) {
+    console.error("Signin error:", error.response?.data);
+    setErrors(parseErrorMessage(error.response?.data?.message));
+    setIsAuthenticated(false);
+    setUser(null);
+  }
+};
 
-  const logout = () => {
-    Cookies.remove("token");
+  const logout = async () => {
+  try {
+    await signOutRequest(); // Llama al backend para eliminar la cookie
+  } catch (error) {
+    console.error("Logout error:", error.response?.data);
+  } finally {
     setUser(null);
     setIsAuthenticated(false);
-  };
+    setLoading(false);
+  }
+};
 
   const confirmAccount = async ({ email, otp }) => {
     try {
@@ -105,24 +114,14 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkLogin = async () => {
-      const token = Cookies.get("token");
-      if (!token) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
       try {
-        const res = await verifyTokenRequest(token);
-        if (!res.data) {
-          setIsAuthenticated(false);
-        } else {
-          setIsAuthenticated(true);
-          setUser(res.data);
-        }
+        const res = await verifyTokenRequest(); // ✅ Ya no usamos Cookies.get()
+        setIsAuthenticated(true);
+        setUser(res.data?.user);
       } catch (error) {
         console.error("Token verification error:", error.response?.data);
         setIsAuthenticated(false);
+        setUser(null);
       } finally {
         setLoading(false);
       }
