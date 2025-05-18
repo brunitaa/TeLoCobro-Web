@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useClients } from "../../context/clientsContext";
 import Sidebar from "../../components/ui/Sidebar";
+import ClientTable from "../../components/clients/ClientTable";
+import ClientModal from "../../components/clients/ClientModal";
+import FileUploadForm from "../../components/clients/FileUploadForm";
 
 function ClientUploadPage() {
   const { clients, uploadCSV, loading } = useClients();
@@ -14,7 +17,6 @@ function ClientUploadPage() {
     if (selectedFile) {
       const fileName = selectedFile.name.toLowerCase();
       const fileType = selectedFile.type;
-
       const isCSV = fileName.endsWith(".csv") || fileType === "text/csv";
 
       if (!isCSV) {
@@ -50,96 +52,37 @@ function ClientUploadPage() {
       <Sidebar />
 
       <main className="ml-64 w-full min-h-screen bg-gray-50 p-8">
-        <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">Subida Masiva de Clientes</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center text-blue-700">
+          Subida Masiva de Clientes
+        </h1>
 
-        <form
-          onSubmit={handleUpload}
-          className="bg-white shadow-md rounded p-6 mb-10 flex flex-col items-start max-w-xl mx-auto"
-        >
-          <label className="font-semibold mb-2">Selecciona un archivo CSV:</label>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            className="border border-gray-300 p-2 rounded w-full mb-2"
-          />
+        {/* Formulario modular de subida de CSV */}
+        <FileUploadForm
+          file={file}
+          fileError={fileError}
+          handleFileChange={handleFileChange}
+          handleUpload={handleUpload}
+        />
 
-          {fileError && (
-            <p className="text-red-600 text-sm mb-2">{fileError}</p>
-          )}
-
-          {file && (
-            <p className="text-sm text-gray-600 mb-2">Archivo seleccionado: <strong>{file.name}</strong></p>
-          )}
-
-          <button
-            type="submit"
-            disabled={!file}
-            className={`px-4 py-2 rounded text-white font-semibold ${
-              file ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-not-allowed"
-            }`}
-          >
-            Subir CSV
-          </button>
-        </form>
-
+        {/* Tabla de clientes */}
         <section className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4">Lista de Clientes</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Lista de Clientes</h2>
 
           {loading ? (
             <p className="text-gray-600">Cargando clientes...</p>
           ) : clients.length === 0 ? (
             <p className="text-gray-500">No hay clientes registrados.</p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border border-gray-200">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="border px-4 py-2">#</th>
-                    <th className="border px-4 py-2">Nombre</th>
-                    <th className="border px-4 py-2">NIT</th>
-                    <th className="border px-4 py-2">Email</th>
-                    <th className="border px-4 py-2">Teléfono</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {clients.map((client, idx) => (
-                    <tr
-                      key={client._id}
-                      onClick={() => handleSelectClient(client)}
-                      className="hover:bg-blue-100 cursor-pointer"
-                    >
-                      <td className="border px-4 py-2">{idx + 1}</td>
-                      <td className="border px-4 py-2">{client.name}</td>
-                      <td className="border px-4 py-2">{client.nit}</td>
-                      <td className="border px-4 py-2">{client.email}</td>
-                      <td className="border px-4 py-2">{client.phone_number}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ClientTable clients={clients} onSelectClient={handleSelectClient} />
           )}
         </section>
 
-        {/* Modal para información del cliente */}
+        {/* Modal con detalle del cliente */}
         {showModal && selectedClient && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-              <h3 className="text-2xl font-bold mb-4 text-blue-700">Información del Cliente</h3>
-              <p className="mb-2"><strong>Nombre:</strong> {selectedClient.name}</p>
-              <p className="mb-2"><strong>NIT:</strong> {selectedClient.nit}</p>
-              <p className="mb-2"><strong>Email:</strong> {selectedClient.email}</p>
-              <p className="mb-2"><strong>Teléfono:</strong> {selectedClient.phone_number}</p>
-
-              <button
-                onClick={() => setShowModal(false)}
-                className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
+          <ClientModal
+            client={selectedClient}
+            onClose={() => setShowModal(false)}
+          />
         )}
       </main>
     </div>
