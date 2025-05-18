@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../context/authContext"; // Importar el contexto
 import { useLocation } from "../../context/locationContext"; // Importar contexto para países, estados y ciudades
 import { Link, useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ function RegisterPage() {
     cities,
     setSelectedCountry,
     setSelectedState,
-    setCities,  // Asegurarnos de que tenemos una función para setear las ciudades
+    setCities, // Asegurarnos de que tenemos una función para setear las ciudades
     selectedCountry,
     selectedState,
     loading,
@@ -59,7 +59,7 @@ function RegisterPage() {
     const stateId = e.target.value;
     setSelectedState(stateId || "");
     // Filtrar las ciudades para el estado seleccionado
-    const filteredCities = cities.filter(city => city.state_id === stateId);
+    const filteredCities = cities.filter((city) => city.state_id === stateId);
     setCities(filteredCities); // Actualizar las ciudades disponibles para el estado seleccionado
   };
 
@@ -71,7 +71,11 @@ function RegisterPage() {
   return (
     <div className="max-w-xl mx-auto mt-10">
       <Card className="p-8 shadow-xl rounded-2xl bg-white space-y-6">
-        <Heading title="Registro de Usuario" subtitle="Crea tu cuenta para comenzar" center />
+        <Heading
+          title="Registro de Usuario"
+          subtitle="Crea tu cuenta para comenzar"
+          center
+        />
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             {...register("first_name")}
@@ -105,7 +109,9 @@ function RegisterPage() {
               className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300"
             />
             {errors.date_of_birth && (
-              <p className="text-sm text-red-600">{errors.date_of_birth.message}</p>
+              <p className="text-sm text-red-600">
+                {errors.date_of_birth.message}
+              </p>
             )}
           </div>
 
@@ -195,14 +201,25 @@ function RegisterPage() {
             disabled={loading}
             className="w-full"
           />
-          {registerErrors && (
-            <p className="text-sm text-center mt-2 text-red-600">{registerErrors}</p>
-          )}
+          {Array.isArray(registerErrors)
+            ? registerErrors.map((err, idx) => (
+                <p key={idx} className="text-sm text-center mt-2 text-red-600">
+                  {err}
+                </p>
+              ))
+            : registerErrors && (
+                <p className="text-sm text-center mt-2 text-red-600">
+                  {registerErrors}
+                </p>
+              )}
         </form>
 
         <p className="text-center text-sm text-gray-600">
           ¿Ya tienes una cuenta?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline font-semibold">
+          <Link
+            to="/login"
+            className="text-blue-600 hover:underline font-semibold"
+          >
             Inicia sesión
           </Link>
         </p>

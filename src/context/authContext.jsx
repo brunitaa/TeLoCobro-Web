@@ -1,7 +1,13 @@
-import { useEffect, createContext, useContext, useState } from "react";
-import { loginRequest, registerRequest, verifyTokenRequest, confirmAccountRequest, forgotPasswordRequest, resetPasswordRequest } from "../api/auth";
-import Cookies from "js-cookie";
-import React from 'react';
+import React, { useEffect, createContext, useContext, useState } from "react";
+import {
+  loginRequest,
+  registerRequest,
+  verifyTokenRequest,
+  confirmAccountRequest,
+  forgotPasswordRequest,
+  resetPasswordRequest,
+  signOutRequest,
+} from "../api/auth";
 
 const AuthContext = createContext();
 
@@ -11,6 +17,14 @@ export const useAuth = () => {
   return context;
 };
 
+// Función para transformar cualquier tipo de error a un array de strings
+const parseErrorMessage = (msg) => {
+  if (Array.isArray(msg)) return msg;
+  if (typeof msg === "string") return [msg];
+  if (typeof msg === "object" && msg?.message) return [msg.message];
+  return ["Error desconocido."];
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,49 +32,55 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [resetPasswordMessage, setResetPasswordMessage] = useState("");
 
-  // clear errors after 5 seconds
   useEffect(() => {
     if (errors.length > 0) {
-      const timer = setTimeout(() => {
-        setErrors([]);
-      }, 5000);
+      const timer = setTimeout(() => setErrors([]), 5000);
       return () => clearTimeout(timer);
     }
   }, [errors]);
 
-  const signup = async (user) => {
+  const signup = async (userData) => {
     try {
-      const res = await registerRequest(user);
+      const res = await registerRequest(userData);
       if (res.status === 200) {
         setUser(res.data);
         setIsAuthenticated(true);
       }
     } catch (error) {
-      console.log(error.response.data);
-      setErrors(error.response.data.message);
+      console.error("Signup error:", error.response?.data);
+      setErrors(parseErrorMessage(error.response?.data?.message));
     }
   };
 
-  const signin = async (user) => {
-    try {
-      const res = await loginRequest(user);
-      setUser(res.data);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const signin = async (userData) => {
+  try {
+    const res = await loginRequest(userData);
+    // Ya se setea la cookie en el backend; asumimos éxito.
+    setIsAuthenticated(true);
+    setUser(res.data?.user || null);
+  } catch (error) {
+    console.error("Signin error:", error.response?.data);
+    setErrors(parseErrorMessage(error.response?.data?.message));
+    setIsAuthenticated(false);
+    setUser(null);
+  }
+};
 
-  const logout = () => {
-    Cookies.remove("token");
+  const logout = async () => {
+  try {
+    await signOutRequest(); // Llama al backend para eliminar la cookie
+  } catch (error) {
+    console.error("Logout error:", error.response?.data);
+  } finally {
     setUser(null);
     setIsAuthenticated(false);
-  };
+    setLoading(false);
+  }
+};
 
   const confirmAccount = async ({ email, otp }) => {
     try {
       const res = await confirmAccountRequest({ email, otp });
-      console.log(res.data);
       return res.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || "Error al confirmar cuenta");
@@ -69,59 +89,44 @@ export const AuthProvider = ({ children }) => {
 
   const forgotPassword = async (email) => {
     try {
-      const res = await forgotPasswordRequest(email);
-      console.log(res.data);
+      await forgotPasswordRequest(email);
       setResetPasswordMessage("Te hemos enviado un OTP a tu correo");
     } catch (error) {
-      console.log(error);
-      setErrors(error.response?.data?.message || "Error al enviar el OTP");
+      console.error("Forgot password error:", error.response?.data);
+      setErrors(parseErrorMessage(error.response?.data?.message));
     }
   };
 
   const resetPassword = async ({ email, otp, newPassword, confirmPassword }) => {
     try {
-      console.log("Datos enviados:", { 
-        email, 
-        otp, 
-        new_password: newPassword,  
-        confirm_password: confirmPassword  
+      await resetPasswordRequest({
+        email,
+        otp,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
       });
-
-      const res = await resetPasswordRequest({ 
-        email, 
-        otp, 
-        new_password: newPassword,  
-        confirm_password: confirmPassword 
-      });
-
-      console.log(res.data);
       setResetPasswordMessage("Contraseña restablecida con éxito");
     } catch (error) {
-      console.log(error.response);  
-      setErrors(error.response?.data?.message || "Error al restablecer la contraseña");
+      console.error("Reset password error:", error.response?.data);
+      setErrors(parseErrorMessage(error.response?.data?.message));
     }
   };
 
   useEffect(() => {
     const checkLogin = async () => {
-      const cookies = Cookies.get();
-      if (!cookies.token) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
       try {
-        const res = await verifyTokenRequest(cookies.token);
-        if (!res.data) return setIsAuthenticated(false);
+        const res = await verifyTokenRequest(); // ✅ Ya no usamos Cookies.get()
         setIsAuthenticated(true);
-        setUser(res.data);
-        setLoading(false);
+        setUser(res.data?.user);
       } catch (error) {
+        console.error("Token verification error:", error.response?.data);
         setIsAuthenticated(false);
+        setUser(null);
+      } finally {
         setLoading(false);
       }
     };
+
     checkLogin();
   }, []);
 
