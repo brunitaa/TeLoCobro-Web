@@ -41,6 +41,10 @@ export default function Sidebar() {
             </Link>
           )}
 
+          <Link to="/clients" className="flex items-center gap-2 hover:text-purple-600">
+            <Building2 size={18} /> Clientes
+          </Link>
+
           <span className="flex items-center gap-2 text-gray-400 cursor-not-allowed">
             <Clock size={18} /> Próximamente
           </span>
