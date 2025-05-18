@@ -7,14 +7,35 @@ function ClientUploadPage() {
   const [file, setFile] = useState(null);
   const [selectedClient, setSelectedClient] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [fileError, setFileError] = useState("");
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const fileName = selectedFile.name.toLowerCase();
+      const fileType = selectedFile.type;
+
+      const isCSV = fileName.endsWith(".csv") || fileType === "text/csv";
+
+      if (!isCSV) {
+        setFile(null);
+        setFileError("Solo se permiten archivos con formato CSV.");
+        e.target.value = "";
+        return;
+      }
+
+      setFile(selectedFile);
+      setFileError("");
+    }
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file) return alert("Selecciona un archivo CSV");
+    if (!file) {
+      setFileError("Selecciona un archivo CSV.");
+      return;
+    }
+
     await uploadCSV(file);
     setFile(null);
   };
@@ -40,11 +61,17 @@ function ClientUploadPage() {
             type="file"
             accept=".csv"
             onChange={handleFileChange}
-            className="border border-gray-300 p-2 rounded w-full mb-4"
+            className="border border-gray-300 p-2 rounded w-full mb-2"
           />
+
+          {fileError && (
+            <p className="text-red-600 text-sm mb-2">{fileError}</p>
+          )}
+
           {file && (
             <p className="text-sm text-gray-600 mb-2">Archivo seleccionado: <strong>{file.name}</strong></p>
           )}
+
           <button
             type="submit"
             disabled={!file}
