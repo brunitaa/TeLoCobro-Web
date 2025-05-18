@@ -14,13 +14,13 @@ import DashBoardPage from "./pages/DashBoardPage.jsx";
 import CompanyRegistrationPage from "./pages/company/CreateCompanyPage.jsx";
 import ViewCompanyPage from "./pages/company/ViewCompanyPage.jsx";
 import EditCompanyPage from "./pages/company/EditCompanyPage.jsx";
-
-
-
+import ClientUploadPage from "./pages/clients/ClientUploadPage.jsx";
+import { ClientsProvider } from "./context/clientsContext.jsx";
 
 function App() {
   return (
     <AuthProvider>
+      <ClientsProvider>
       <LocationProvider>
         <CompanyProvider>
           <BrowserRouter>
@@ -35,12 +35,14 @@ function App() {
                     <Route path="/register-company" element={<CompanyRegistrationPage />} />
                     <Route path="/view-company" element={<ViewCompanyPage />} />
                     <Route path="/edit-company" element={<EditCompanyPage />} />
+                    <Route path="/clients" element={<ClientUploadPage/>} />
                     <Route path="/dashboard" element={<DashBoardPage />} />
                 </Route>
               </Routes>
           </BrowserRouter>
         </CompanyProvider>
       </LocationProvider>
+      </ClientsProvider>
     </AuthProvider>
   );
 }

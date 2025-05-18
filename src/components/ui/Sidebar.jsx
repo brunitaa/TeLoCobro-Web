@@ -8,6 +8,7 @@ import {
   PlusCircle,
   LogOut,
   Clock,
+  User2Icon,
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -40,6 +41,10 @@ export default function Sidebar() {
               <PlusCircle size={18} /> Crear Compañía
             </Link>
           )}
+
+          <Link to="/clients" className="flex items-center gap-2 hover:text-purple-600">
+            <User2Icon size={18} /> Clientes
+          </Link>
 
           <span className="flex items-center gap-2 text-gray-400 cursor-not-allowed">
             <Clock size={18} /> Próximamente
