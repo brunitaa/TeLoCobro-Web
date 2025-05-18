@@ -16,6 +16,7 @@ import ViewCompanyPage from "./pages/company/ViewCompanyPage.jsx";
 import EditCompanyPage from "./pages/company/EditCompanyPage.jsx";
 import ClientUploadPage from "./pages/clients/ClientUploadPage.jsx";
 import { ClientsProvider } from "./context/clientsContext.jsx";
+import CompanyScreenDecider from "./components/company/CompanyScreenDecider";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                     <Route path="/edit-company" element={<EditCompanyPage />} />
                     <Route path="/clients" element={<ClientUploadPage/>} />
                     <Route path="/dashboard" element={<DashBoardPage />} />
+                    <Route path="/my-company" element={<CompanyScreenDecider />} />
                 </Route>
               </Routes>
           </BrowserRouter>
