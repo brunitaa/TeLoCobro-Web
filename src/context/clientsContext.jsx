@@ -1,10 +1,10 @@
-// src/context/ClientsContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   uploadCSVRequest,
   getAllClientsRequest,
   getClientRequest,
 } from "../api/clients";
+import { useAuth } from "./authContext";
 
 const ClientsContext = createContext();
 
@@ -13,6 +13,7 @@ export const useClients = () => useContext(ClientsContext);
 export const ClientsProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth(); 
 
   const loadClients = async () => {
     setLoading(true);
@@ -31,7 +32,7 @@ export const ClientsProvider = ({ children }) => {
     formData.append("file", file);
     try {
       await uploadCSVRequest(formData);
-      await loadClients(); // Reload after upload
+      await loadClients();
     } catch (error) {
       console.error("Error uploading CSV", error);
     }
@@ -47,8 +48,10 @@ export const ClientsProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    loadClients();
-  }, []);
+    if (user) {
+      loadClients();
+    }
+  }, [user]);
 
   return (
     <ClientsContext.Provider
