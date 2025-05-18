@@ -56,28 +56,31 @@ function ClientUploadPage() {
           Subida Masiva de Clientes
         </h1>
 
-        {/* Formulario modular de subida de CSV */}
         <FileUploadForm
           file={file}
+          fileName={file?.name}
           fileError={fileError}
           handleFileChange={handleFileChange}
           handleUpload={handleUpload}
         />
 
-        {/* Tabla de clientes */}
         <section className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Lista de Clientes</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+            Lista de Clientes
+          </h2>
 
           {loading ? (
             <p className="text-gray-600">Cargando clientes...</p>
           ) : clients.length === 0 ? (
             <p className="text-gray-500">No hay clientes registrados.</p>
           ) : (
-            <ClientTable clients={clients} onSelectClient={handleSelectClient} />
+            <ClientTable
+              clients={clients}
+              onSelectClient={handleSelectClient}
+            />
           )}
         </section>
 
-        {/* Modal con detalle del cliente */}
         {showModal && selectedClient && (
           <ClientModal
             client={selectedClient}
