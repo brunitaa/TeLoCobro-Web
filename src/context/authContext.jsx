@@ -17,11 +17,30 @@ export const useAuth = () => {
   return context;
 };
 
-// Función para transformar cualquier tipo de error a un array de strings
-const parseErrorMessage = (msg) => {
-  if (Array.isArray(msg)) return msg;
-  if (typeof msg === "string") return [msg];
-  if (typeof msg === "object" && msg?.message) return [msg.message];
+//MANEJAR ERRORES
+const parseErrorMessage = (data) => {
+  if (!data) return ["Error desconocido."];
+
+  if (Array.isArray(data)) {
+    return data.map(err => err.message || "Error");
+  }
+
+  if (typeof data === "object") {
+    if (Array.isArray(data.error)) {
+      return data.error.map(err => err.message || "Error");
+    }
+
+    if (data.error?.message) {
+      return [data.error.message];
+    }
+
+    if (data.message) {
+      return [data.message];
+    }
+  }
+
+  if (typeof data === "string") return [data];
+
   return ["Error desconocido."];
 };
 
@@ -48,42 +67,42 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Signup error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.message));
+      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
     }
   };
 
   const signin = async (userData) => {
-  try {
-    const res = await loginRequest(userData);
-    // Ya se setea la cookie en el backend; asumimos éxito.
-    setIsAuthenticated(true);
-    setUser(res.data?.user || null);
-  } catch (error) {
-    console.error("Signin error:", error.response?.data);
-    setErrors(parseErrorMessage(error.response?.data?.message));
-    setIsAuthenticated(false);
-    setUser(null);
-  }
-};
+    try {
+      const res = await loginRequest(userData);
+      setIsAuthenticated(true);
+      setUser(res.data?.user || null);
+    } catch (error) {
+      console.error("Signin error:", error.response?.data);
+      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
+      setIsAuthenticated(false);
+      setUser(null);
+    }
+  };
 
   const logout = async () => {
-  try {
-    await signOutRequest(); // Llama al backend para eliminar la cookie
-  } catch (error) {
-    console.error("Logout error:", error.response?.data);
-  } finally {
-    setUser(null);
-    setIsAuthenticated(false);
-    setLoading(false);
-  }
-};
+    try {
+      await signOutRequest();
+    } catch (error) {
+      console.error("Logout error:", error.response?.data);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      setLoading(false);
+    }
+  };
 
   const confirmAccount = async ({ email, otp }) => {
     try {
       const res = await confirmAccountRequest({ email, otp });
       return res.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Error al confirmar cuenta");
+      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
+      throw new Error("Error al confirmar cuenta");
     }
   };
 
@@ -93,7 +112,7 @@ export const AuthProvider = ({ children }) => {
       setResetPasswordMessage("Te hemos enviado un OTP a tu correo");
     } catch (error) {
       console.error("Forgot password error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.message));
+      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
     }
   };
 
@@ -108,14 +127,14 @@ export const AuthProvider = ({ children }) => {
       setResetPasswordMessage("Contraseña restablecida con éxito");
     } catch (error) {
       console.error("Reset password error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.message));
+      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
     }
   };
 
   useEffect(() => {
     const checkLogin = async () => {
       try {
-        const res = await verifyTokenRequest(); // ✅ Ya no usamos Cookies.get()
+        const res = await verifyTokenRequest();
         setIsAuthenticated(true);
         setUser(res.data?.user);
       } catch (error) {
