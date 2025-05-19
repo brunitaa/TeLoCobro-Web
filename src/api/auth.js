@@ -7,5 +7,5 @@ export const verifyTokenRequest = async () => axios.get(`/auth/users/status`);
 export const signOutRequest = async () => axios.post(`/auth/users/sign-out`);
 export const confirmAccountRequest = async (data) => axios.post(`/auth/users/sign-up/confirm`, data);
 
-export const forgotPasswordRequest = async (email) => axios.post(`/auth/password/users/forgot`, { email });
-export const resetPasswordRequest = async (data) => axios.post(`/auth/password/users/reset`, data);
+export const forgotPasswordRequest = async (email) => axios.post(`/auth/users/password/forgot`, { email });
+export const resetPasswordRequest = async (data) => axios.post(`/auth/users/password/reset`, data);
