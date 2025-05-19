@@ -4,6 +4,7 @@ import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 import { Heading } from "../../components/ui/Heading";
 import { useNavigate } from "react-router-dom"; // Importar useNavigate
+import { Card } from "../../components/ui/Card";
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -22,6 +23,7 @@ export function ForgotPasswordPage() {
 
   return (
     <div className="space-y-6">
+      <Card className="p-8 shadow-lg rounded-xl bg-white w-full max-w-md">
       <Heading title="Olvidé mi Contraseña" subtitle="Ingresa tu correo para recibir un OTP" />
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
@@ -34,6 +36,7 @@ export function ForgotPasswordPage() {
         <Button type="submit" label="Enviar OTP" />
       </form>
       {message && <p className="text-center mt-4">{message}</p>}
+      </Card>
     </div>
   );
 }
