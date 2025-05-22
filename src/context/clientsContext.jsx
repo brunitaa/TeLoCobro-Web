@@ -13,19 +13,20 @@ export const useClients = () => useContext(ClientsContext);
 export const ClientsProvider = ({ children }) => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth(); 
+  const { isAuthenticated} = useAuth(); 
 
   const loadClients = async () => {
     setLoading(true);
     try {
       const res = await getAllClientsRequest();
+      console.log("Clientes recibidos:", res.data.data.clients);
       setClients(res.data.data.clients);
     } catch (error) {
       console.error("Error loading clients", error);
     } finally {
       setLoading(false);
     }
-  };
+};
 
   const uploadCSV = async (file) => {
     const formData = new FormData();
@@ -47,15 +48,9 @@ export const ClientsProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      loadClients();
-    }
-  }, [user]);
-
   return (
     <ClientsContext.Provider
-      value={{ clients, loading, uploadCSV, getClientById }}
+      value={{ clients, loading, uploadCSV, getClientById, loadClients }}
     >
       {children}
     </ClientsContext.Provider>

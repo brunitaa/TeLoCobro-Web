@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useClients } from "../../context/clientsContext";
 import Sidebar from "../../components/ui/Sidebar";
 import ClientTable from "../../components/clients/ClientTable";
@@ -6,12 +6,14 @@ import ClientModal from "../../components/clients/ClientModal";
 import FileUploadForm from "../../components/clients/FileUploadForm";
 import Pagination from "../../components/clients/Pagination";
 
+
 function ClientUploadPage() {
-  const { clients, uploadCSV, loading } = useClients();
+  const { clients, uploadCSV, loading, loadClients } = useClients();
+
   const [file, setFile] = useState(null);
+  const [fileError, setFileError] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [fileError, setFileError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterBy, setFilterBy] = useState("name");
   const [sortField, setSortField] = useState("name");
@@ -19,6 +21,11 @@ function ClientUploadPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
+  useEffect(() => {
+      loadClients(); 
+    }, []);
+
+  // Validación de archivo CSV al seleccionar
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -38,6 +45,7 @@ function ClientUploadPage() {
     }
   };
 
+  // Subir CSV y limpiar archivo cargado
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -45,7 +53,7 @@ function ClientUploadPage() {
       return;
     }
 
-    await uploadCSV(file);
+    await uploadCSV(file); // Aquí se recarga automáticamente la lista en ClientsContext
     setFile(null);
   };
 
@@ -54,6 +62,7 @@ function ClientUploadPage() {
     setShowModal(true);
   };
 
+  // Manejar ordenamiento de columnas
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -63,6 +72,7 @@ function ClientUploadPage() {
     }
   };
 
+  // Filtrar y ordenar clientes
   const filteredClients = clients
     .filter((client) => {
       const field = client[filterBy] || "";
@@ -76,6 +86,7 @@ function ClientUploadPage() {
       return 0;
     });
 
+  // Paginación
   const totalPages = Math.ceil(filteredClients.length / pageSize);
   const paginatedClients = filteredClients.slice(
     (currentPage - 1) * pageSize,
@@ -101,9 +112,7 @@ function ClientUploadPage() {
 
         <section className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-            <h2 className="text-2xl font-semibold text-gray-800">
-              Lista de Clientes
-            </h2>
+            <h2 className="text-2xl font-semibold text-gray-800">Lista de Clientes</h2>
             <div className="flex gap-2">
               <select
                 value={filterBy}
@@ -148,10 +157,7 @@ function ClientUploadPage() {
         </section>
 
         {showModal && selectedClient && (
-          <ClientModal
-            client={selectedClient}
-            onClose={() => setShowModal(false)}
-          />
+          <ClientModal client={selectedClient} onClose={() => setShowModal(false)} />
         )}
       </main>
     </div>
