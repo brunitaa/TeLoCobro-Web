@@ -22,12 +22,12 @@ const parseErrorMessage = (data) => {
   if (!data) return ["Error desconocido."];
 
   if (Array.isArray(data)) {
-    return data.map(err => err.message || "Error");
+    return data.map((err) => err.message || "Error");
   }
 
   if (typeof data === "object") {
     if (Array.isArray(data.error)) {
-      return data.error.map(err => err.message || "Error");
+      return data.error.map((err) => err.message || "Error");
     }
 
     if (data.error?.message) {
@@ -62,12 +62,15 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await registerRequest(userData);
       if (res.status === 200) {
-        setUser(res.data);
-        setIsAuthenticated(true);
+        // No autenticar aún
+        // Deja que el usuario confirme su cuenta primero
+        return res.data;
       }
     } catch (error) {
       console.error("Signup error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
+      setErrors(
+        parseErrorMessage(error.response?.data?.data || error.response?.data)
+      );
     }
   };
 
@@ -78,7 +81,9 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data?.user || null);
     } catch (error) {
       console.error("Signin error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
+      setErrors(
+        parseErrorMessage(error.response?.data?.data || error.response?.data)
+      );
       setIsAuthenticated(false);
       setUser(null);
     }
@@ -101,7 +106,9 @@ export const AuthProvider = ({ children }) => {
       const res = await confirmAccountRequest({ email, otp });
       return res.data;
     } catch (error) {
-      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
+      setErrors(
+        parseErrorMessage(error.response?.data?.data || error.response?.data)
+      );
       throw new Error("Error al confirmar cuenta");
     }
   };
@@ -112,11 +119,18 @@ export const AuthProvider = ({ children }) => {
       setResetPasswordMessage("Te hemos enviado un OTP a tu correo");
     } catch (error) {
       console.error("Forgot password error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
+      setErrors(
+        parseErrorMessage(error.response?.data?.data || error.response?.data)
+      );
     }
   };
 
-  const resetPassword = async ({ email, otp, newPassword, confirmPassword }) => {
+  const resetPassword = async ({
+    email,
+    otp,
+    newPassword,
+    confirmPassword,
+  }) => {
     try {
       await resetPasswordRequest({
         email,
@@ -127,7 +141,9 @@ export const AuthProvider = ({ children }) => {
       setResetPasswordMessage("Contraseña restablecida con éxito");
     } catch (error) {
       console.error("Reset password error:", error.response?.data);
-      setErrors(parseErrorMessage(error.response?.data?.data || error.response?.data));
+      setErrors(
+        parseErrorMessage(error.response?.data?.data || error.response?.data)
+      );
     }
   };
 

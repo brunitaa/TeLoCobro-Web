@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useAuth } from "../../context/authContext"; // Importar el contexto
 import { useLocation } from "../../context/locationContext"; // Importar contexto para países, estados y ciudades
 import { Link, useNavigate } from "react-router-dom";
@@ -11,7 +10,7 @@ import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
 
 function RegisterPage() {
-  const { signup, errors: registerErrors, isAuthenticated } = useAuth();
+  const { signup, errors: registerErrors} = useAuth();
   const {
     countries,
     states,
@@ -36,17 +35,17 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    try {
-      const response = await signup(data);
-      console.log("Registro exitoso:", response);
-    } catch (error) {
-      console.error("Error en el registro:", error);
-    }
-  };
+  try {
+    const response = await signup(data);
+    console.log("Registro exitoso:", response);
 
-  useEffect(() => {
-    if (isAuthenticated) navigate("/confirm-account");
-  }, [isAuthenticated]);
+    if (response) {
+      navigate("/confirm-account");
+    }
+  } catch (error) {
+    console.error("Error en el registro:", error);
+  }
+};
 
   const handleCountryChange = (e) => {
     const countryId = e.target.value;
