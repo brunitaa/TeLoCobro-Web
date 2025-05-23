@@ -1,0 +1,25 @@
+import React from "react";
+
+function DebtRow({ debt, index, onClick }) {
+  const formatDate = (dateStr) =>
+    dateStr ? dateStr.slice(0, 10) : "";
+
+  return (
+    <tr className="hover:bg-blue-50 transition cursor-pointer" onClick={onClick}>
+      <td className="px-6 py-3">{index + 1}</td>
+      <td className="px-6 py-3">
+        {typeof debt.client_id === "object"
+          ? debt.client_id.name || debt.client_id._id
+          : debt.client_id}
+      </td>
+      <td className="px-6 py-3">{formatDate(debt.issue_date)}</td>
+      <td className="px-6 py-3">{debt.invoice_number}</td>
+      <td className="px-6 py-3">{formatDate(debt.due_date)}</td>
+      <td className="px-6 py-3">{debt.currency}</td>
+      <td className="px-6 py-3">{debt.outstanding}</td>
+      <td className="px-6 py-3">{debt.status}</td>
+    </tr>
+  );
+}
+
+export default DebtRow;

@@ -2,15 +2,25 @@ import { useState } from "react";
 import { useDebts } from "../../context/debtsContext";
 import Sidebar from "../../components/ui/Sidebar";
 import FileUploadForm from "../../components/clients/FileUploadForm";
+import DebtTable from "../../components/debts/DebtTable";
+import DebtSearchBar from "../../components/debts/DebtSearchBar";
+import Pagination from "../../components/clients/Pagination";
 
 function DebtUploadPage() {
-  const { uploadDebtsCSV } = useDebts();
+  const { debts, uploadDebtsCSV } = useDebts();
 
   const [file, setFile] = useState(null);
   const [fileError, setFileError] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [filterByStatus, setFilterByStatus] = useState("");
+  const [filterByClient, setFilterByClient] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDebt, setSelectedDebt] = useState(null);
+  const [sortField, setSortField] = useState("due_date");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
-  // Validación del archivo CSV
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -27,11 +37,10 @@ function DebtUploadPage() {
 
       setFile(selectedFile);
       setFileError("");
-      setUploadSuccess(false); // Resetear mensaje de éxito al cambiar archivo
+      setUploadSuccess(false);
     }
   };
 
-  // Subir archivo CSV
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -47,6 +56,58 @@ function DebtUploadPage() {
       setFileError("Hubo un error al subir el archivo. Intenta nuevamente.");
     }
   };
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const filteredDebts = debts.filter(
+    (debt) =>
+      (!filterByStatus || debt.status === filterByStatus) &&
+      (debt.invoice_number
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+        (typeof debt.client_id === "object" &&
+          debt.client_id.name
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase())))
+  );
+
+  const sortedDebts = [...filteredDebts].sort((a, b) => {
+    let aValue, bValue;
+    switch (sortField) {
+      case "client":
+        aValue = typeof a.client_id === "object" ? a.client_id.name || "" : "";
+        bValue = typeof b.client_id === "object" ? b.client_id.name || "" : "";
+        break;
+      case "due_date":
+        aValue = a.due_date || "";
+        bValue = b.due_date || "";
+        break;
+      case "outstanding":
+        aValue = Number(a.outstanding) || 0;
+        bValue = Number(b.outstanding) || 0;
+        break;
+      default:
+        aValue = a[sortField] || "";
+        bValue = b[sortField] || "";
+    }
+
+    if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const totalPages = Math.ceil(sortedDebts.length / pageSize);
+  const paginatedDebts = sortedDebts.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <div className="flex">
@@ -69,6 +130,32 @@ function DebtUploadPage() {
             ¡Archivo CSV subido correctamente!
           </p>
         )}
+
+        <section className="max-w-5xl mx-auto bg-white p-6 rounded shadow mt-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Lista de Deudas
+            </h2>
+            <DebtSearchBar
+              filterByStatus={filterByStatus}
+              setFilterByStatus={setFilterByStatus}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+          </div>
+          <DebtTable
+            debts={paginatedDebts}
+            onSelectDebt={setSelectedDebt}
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </section>
       </main>
     </div>
   );

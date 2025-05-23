@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import {
   uploadDebtsCSVRequest,
   getAllDebtsRequest,
+  getDebtsByClientRequest,
+  searchDebtsByStatusRequest,
 } from "../api/debts";
 import { useAuth } from "./authContext";
 
@@ -12,7 +14,7 @@ export const useDebts = () => useContext(DebtsContext);
 export const DebtsProvider = ({ children }) => {
   const [debts, setDebts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { isAuthenticated} = useAuth(); 
+  const { isAuthenticated } = useAuth();
 
   const loadDebts = async () => {
     setLoading(true);
@@ -25,7 +27,7 @@ export const DebtsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-};
+  };
 
   const uploadDebtsCSV = async (file) => {
     const formData = new FormData();
@@ -38,9 +40,34 @@ export const DebtsProvider = ({ children }) => {
     }
   };
 
+  const getDebtsByClient = async (clientId) => {
+    try {
+      const res = await getDebtsByClientRequest(clientId);
+      return res.data.data.debts;
+    } catch (error) {
+      console.error("Error fetching debts by client", error);
+    }
+  };
+
+  const searchDebtsByStatus = async (clientId, status) => {
+    try {
+      const res = await searchDebtsByStatusRequest(clientId, status);
+      return res.data.data.debts;
+    } catch (error) {
+      console.error("Error searching debts by status", error);
+    }
+  };
+
   return (
     <DebtsContext.Provider
-      value={{ debts, loading, uploadDebtsCSV, loadDebts }}
+      value={{
+        debts,
+        loading,
+        uploadDebtsCSV,
+        loadDebts,
+        getDebtsByClient,
+        searchDebtsByStatus,
+      }}
     >
       {children}
     </DebtsContext.Provider>
