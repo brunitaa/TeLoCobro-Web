@@ -1,13 +1,11 @@
+/* eslint-disable no-unused-vars */
 "use client";
 
 import Illustration from "../../assets/landing-illustration.png";
-// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-
 import {
   Modal,
   ModalContent,
-  ModalHeader,
   ModalBody,
   ModalFooter,
   Button,
@@ -19,25 +17,25 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full min-h-screen bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 py-20 lg:py-36 flex flex-col-reverse lg:flex-row items-center justify-center gap-16 relative z-10 min-h-[calc(100vh-80px)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-36 flex flex-col-reverse lg:flex-row items-center justify-between gap-10 sm:gap-16 relative z-10 min-h-[calc(100vh-80px)]">
         {/* Texto */}
         <motion.div
-          className="max-w-xl text-center lg:text-left"
+          className="w-full lg:max-w-xl text-center lg:text-left"
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900">
-            ¡COBRA FÁCIL <br /> Y RÁPIDO!
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+            ¡COBRA FÁCIL <br className="hidden sm:block" /> Y RÁPIDO!
           </h1>
-          <p className="mt-4 text-gray-600">
+          <p className="mt-4 text-gray-600 text-sm sm:text-base">
             Olvídate del seguimiento manual. Con TeLoCobro puedes programar
             recordatorios, llevar el control de pagos y gestionar tus clientes
             desde un solo lugar.
           </p>
           <button
             onClick={onOpen}
-            className="mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-lg hover:scale-105 transition"
+            className="mt-6 px-6 py-3 text-sm sm:text-base bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-lg hover:scale-105 transition"
           >
             Más Información
           </button>
@@ -45,7 +43,7 @@ export default function HeroSection() {
 
         {/* Ilustración */}
         <motion.div
-          className="w-[300px] lg:w-[400px] mb-10 lg:mb-0"
+          className="w-[180px] sm:w-[260px] md:w-[320px] lg:w-[400px] mb-10 lg:mb-0"
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}
@@ -79,7 +77,7 @@ export default function HeroSection() {
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        hideCloseButton={true}
+        hideCloseButton
         backdrop="blur"
         placement="center"
         classNames={{
@@ -90,7 +88,6 @@ export default function HeroSection() {
         <ModalContent>
           {(onClose) => (
             <>
-              {/* Botón de cerrar arriba a la derecha */}
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold transition"
