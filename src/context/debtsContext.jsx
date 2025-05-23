@@ -20,10 +20,10 @@ export const DebtsProvider = ({ children }) => {
     setLoading(true);
     try {
       const res = await getAllDebtsRequest();
-      console.log("Deudas recibidos:", res.data.data.debts);
+      console.log("Deudas recibidas:", res.data.data.debts);
       setDebts(res.data.data.debts);
     } catch (error) {
-      console.error("Error loading clients", error);
+      console.error("Error cargando deudas:", error);
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ export const DebtsProvider = ({ children }) => {
       await uploadDebtsCSVRequest(formData);
       await loadDebts();
     } catch (error) {
-      console.error("Error uploading CSV", error);
+      console.error("Error subiendo archivo CSV de deudas:", error);
     }
   };
 
@@ -45,7 +45,7 @@ export const DebtsProvider = ({ children }) => {
       const res = await getDebtsByClientRequest(clientId);
       return res.data.data.debts;
     } catch (error) {
-      console.error("Error fetching debts by client", error);
+      console.error("Error obteniendo deudas del cliente:", error);
     }
   };
 
@@ -54,9 +54,15 @@ export const DebtsProvider = ({ children }) => {
       const res = await searchDebtsByStatusRequest(clientId, status);
       return res.data.data.debts;
     } catch (error) {
-      console.error("Error searching debts by status", error);
+      console.error("Error filtrando deudas por estado:", error);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadDebts();
+    }
+  }, [isAuthenticated]);
 
   return (
     <DebtsContext.Provider
