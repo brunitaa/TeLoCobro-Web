@@ -2,13 +2,21 @@ import React, { useEffect } from "react";
 import { useCompany } from "../../context/companyContext";
 import Sidebar from "../../components/ui/Sidebar";
 import CompanyCard from "../../components/company/CompanyCard";
+import { useNavigate } from "react-router-dom";
 
 const ViewCompanyPage = () => {
   const { companies, loadCompanies, loading } = useCompany();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadCompanies();
   }, [loadCompanies]);
+
+  useEffect(() => {
+    if (!loading && (!Array.isArray(companies) || companies.length === 0)) {
+      navigate("/register-company", { replace: true });
+    }
+  }, [companies, loading, navigate]);
 
   return (
     <div className="flex">
