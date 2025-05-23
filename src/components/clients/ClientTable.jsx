@@ -21,14 +21,14 @@ function ClientTable({ clients, onSelectClient, sortField, sortOrder, onSort }) 
 
   return (
     <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
-      <table className="w-full text-sm text-gray-700">
+      <table className="min-w-full text-sm text-gray-700">
         <thead className="bg-gradient-to-r from-blue-100 to-purple-100 text-gray-800 font-semibold text-left">
           <tr>
-            <th className="px-6 py-3">#</th>
+            <th className="px-4 py-3 whitespace-nowrap">#</th>
             {headers.map(({ label, field }) => (
               <th
                 key={field}
-                className="px-6 py-3 cursor-pointer hover:text-blue-600 transition"
+                className="px-4 py-3 cursor-pointer whitespace-nowrap hover:text-blue-600 transition"
                 onClick={() => onSort(field)}
               >
                 {label}
@@ -37,6 +37,7 @@ function ClientTable({ clients, onSelectClient, sortField, sortOrder, onSort }) 
             ))}
           </tr>
         </thead>
+
         <tbody className="bg-white divide-y divide-gray-100">
           {clients.map((client, idx) => (
             <ClientRow

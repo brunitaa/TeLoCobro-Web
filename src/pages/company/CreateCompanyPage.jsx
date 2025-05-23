@@ -20,9 +20,9 @@ const CreateCompanyPage = () => {
 
   if (loading) {
     return (
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
         <Sidebar />
-        <main className="ml-64 w-full min-h-screen bg-gray-50 p-8 flex items-center justify-center">
+        <main className="w-full lg:ml-64 flex items-center justify-center p-8">
           <span className="text-gray-500">Cargando...</span>
         </main>
       </div>
@@ -30,10 +30,12 @@ const CreateCompanyPage = () => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="ml-64 w-full min-h-screen bg-gray-50 p-8">
-        <CreateCompanyForm />
+      <main className="w-full lg:ml-64 px-4 sm:px-6 lg:px-8 py-10">
+        <div className="max-w-4xl mx-auto">
+          <CreateCompanyForm />
+        </div>
       </main>
     </div>
   );

@@ -22,10 +22,12 @@ const CompanyScreenDecider = () => {
   }, [companies, loading, navigate]);
 
   return (
-    <div className="flex">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="ml-64 w-full min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-600 text-lg font-medium">Verificando información de la compañía...</p>
+      <main className="w-full lg:ml-64 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <p className="text-gray-600 text-lg font-medium text-center">
+          Verificando información de la compañía...
+        </p>
       </main>
     </div>
   );

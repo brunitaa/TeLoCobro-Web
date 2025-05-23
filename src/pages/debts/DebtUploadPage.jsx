@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { useDebts } from "../../context/debtsContext";
 import Sidebar from "../../components/ui/Sidebar";
@@ -13,7 +14,6 @@ function DebtUploadPage() {
   const [fileError, setFileError] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [filterByStatus, setFilterByStatus] = useState("");
-  const [filterByClient, setFilterByClient] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDebt, setSelectedDebt] = useState(null);
   const [sortField, setSortField] = useState("due_date");
@@ -112,7 +112,7 @@ function DebtUploadPage() {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="ml-64 w-full min-h-screen bg-gray-50 p-8">
+      <main className="w-full min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8 md:ml-64 transition-all duration-300">
         <h1 className="text-3xl font-bold mb-8 text-center text-blue-700">
           Subida Masiva de Deudas
         </h1>

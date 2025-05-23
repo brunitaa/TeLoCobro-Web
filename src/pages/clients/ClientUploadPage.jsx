@@ -6,7 +6,6 @@ import ClientModal from "../../components/clients/ClientModal";
 import FileUploadForm from "../../components/clients/FileUploadForm";
 import Pagination from "../../components/clients/Pagination";
 
-
 function ClientUploadPage() {
   const { clients, uploadCSV, loading, loadClients } = useClients();
 
@@ -22,10 +21,9 @@ function ClientUploadPage() {
   const pageSize = 10;
 
   useEffect(() => {
-      loadClients(); 
-    }, []);
+    loadClients();
+  }, []);
 
-  // Validación de archivo CSV al seleccionar
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -45,7 +43,6 @@ function ClientUploadPage() {
     }
   };
 
-  // Subir CSV y limpiar archivo cargado
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -53,7 +50,7 @@ function ClientUploadPage() {
       return;
     }
 
-    await uploadCSV(file); // Aquí se recarga automáticamente la lista en ClientsContext
+    await uploadCSV(file);
     setFile(null);
   };
 
@@ -62,7 +59,6 @@ function ClientUploadPage() {
     setShowModal(true);
   };
 
-  // Manejar ordenamiento de columnas
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -72,7 +68,6 @@ function ClientUploadPage() {
     }
   };
 
-  // Filtrar y ordenar clientes
   const filteredClients = clients
     .filter((client) => {
       const field = client[filterBy] || "";
@@ -86,7 +81,6 @@ function ClientUploadPage() {
       return 0;
     });
 
-  // Paginación
   const totalPages = Math.ceil(filteredClients.length / pageSize);
   const paginatedClients = filteredClients.slice(
     (currentPage - 1) * pageSize,
@@ -94,11 +88,11 @@ function ClientUploadPage() {
   );
 
   return (
-    <div className="flex">
+    <div className="flex flex-col md:flex-row">
       <Sidebar />
 
-      <main className="ml-64 w-full min-h-screen bg-gray-50 p-8">
-        <h1 className="text-3xl font-bold mb-8 text-center text-blue-700">
+      <main className="md:ml-64 w-full min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-blue-700">
           Subida Masiva de Clientes
         </h1>
 
@@ -110,10 +104,12 @@ function ClientUploadPage() {
           handleUpload={handleUpload}
         />
 
-        <section className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-            <h2 className="text-2xl font-semibold text-gray-800">Lista de Clientes</h2>
-            <div className="flex gap-2">
+        <section className="w-full bg-white p-4 sm:p-6 rounded shadow mt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+              Lista de Clientes
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-2">
               <select
                 value={filterBy}
                 onChange={(e) => setFilterBy(e.target.value)}
@@ -127,7 +123,7 @@ function ClientUploadPage() {
               <input
                 type="text"
                 placeholder={`Buscar por ${filterBy}...`}
-                className="border border-gray-300 rounded px-3 py-1 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded px-3 py-1 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -157,7 +153,10 @@ function ClientUploadPage() {
         </section>
 
         {showModal && selectedClient && (
-          <ClientModal client={selectedClient} onClose={() => setShowModal(false)} />
+          <ClientModal
+            client={selectedClient}
+            onClose={() => setShowModal(false)}
+          />
         )}
       </main>
     </div>
