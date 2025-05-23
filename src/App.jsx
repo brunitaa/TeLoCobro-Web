@@ -17,10 +17,13 @@ import EditCompanyPage from "./pages/company/EditCompanyPage.jsx";
 import ClientUploadPage from "./pages/clients/ClientUploadPage.jsx";
 import { ClientsProvider } from "./context/clientsContext.jsx";
 import CompanyScreenDecider from "./components/company/CompanyScreenDecider";
+import { DebtsProvider } from "./context/debtsContext.jsx";
+import DebtUploadPage from "./pages/debts/DebtUploadPage.jsx";
 
 function App() {
   return (
     <AuthProvider>
+      <DebtsProvider>
       <ClientsProvider>
       <LocationProvider>
         <CompanyProvider>
@@ -39,12 +42,14 @@ function App() {
                     <Route path="/clients" element={<ClientUploadPage/>} />
                     <Route path="/dashboard" element={<DashBoardPage />} />
                     <Route path="/my-company" element={<CompanyScreenDecider />} />
+                    <Route path="/debts" element={<DebtUploadPage/>}/>
                 </Route>
               </Routes>
           </BrowserRouter>
         </CompanyProvider>
       </LocationProvider>
       </ClientsProvider>
+      </DebtsProvider>
     </AuthProvider>
   );
 }

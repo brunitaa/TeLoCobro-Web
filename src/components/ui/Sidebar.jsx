@@ -8,7 +8,9 @@ import {
   LogOut,
   Clock,
   User2Icon,
+  MonitorCheck,
 } from "lucide-react";
+import { BiMoney } from "react-icons/bi";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -36,6 +38,12 @@ export default function Sidebar() {
             className="flex items-center gap-2 hover:text-purple-600"
           >
             <User2Icon size={18} /> Clientes
+          </Link>
+          <Link
+            to="/debts"
+            className="flex items-center gap-2 hover:text-purple-600"
+          >
+            <MonitorCheck size={18} /> Deudas
           </Link>
 
           <span className="flex items-center gap-2 text-gray-400 cursor-not-allowed">
