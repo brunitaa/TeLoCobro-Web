@@ -23,15 +23,15 @@ function DebtTable({ debts, onSelectDebt, sortField, sortOrder, onSort }) {
   };
 
   return (
-    <div className="overflow-x-auto rounded-lg shadow border border-gray-200 mt-8">
-      <table className="w-full text-sm text-gray-700">
+    <div className="w-full overflow-x-auto rounded-lg shadow border border-gray-200 mt-8">
+      <table className="w-full text-sm text-gray-700 min-w-[700px]">
         <thead className="bg-gradient-to-r from-blue-100 to-purple-100 text-gray-800 font-semibold text-left">
           <tr>
-            <th className="px-6 py-3">#</th>
+            <th className="px-4 sm:px-6 py-3">#</th>
             {headers.map(({ label, field }) => (
               <th
                 key={field}
-                className="px-6 py-3 cursor-pointer hover:text-blue-600 transition"
+                className="px-4 sm:px-6 py-3 cursor-pointer hover:text-blue-600 transition"
                 onClick={() => onSort(field)}
               >
                 {label}

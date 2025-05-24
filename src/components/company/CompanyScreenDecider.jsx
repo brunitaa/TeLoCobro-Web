@@ -22,8 +22,11 @@ export default function CompanyScreenDecider() {
   }, [loading, companies, navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full px-4 bg-gray-50">
       <Spinner />
+      <p className="mt-4 text-sm text-gray-600 text-center">
+        Verificando información de la compañía...
+      </p>
     </div>
   );
 }

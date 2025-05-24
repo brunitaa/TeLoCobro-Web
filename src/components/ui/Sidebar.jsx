@@ -60,13 +60,22 @@ export default function Sidebar() {
           <div>
             <h2 className="text-2xl font-bold text-blue-600 mb-8">TeLoCobro</h2>
             <nav className="flex flex-col space-y-4 text-gray-700 font-medium">
-              <Link to="/my-company" className="flex items-center gap-2 hover:text-purple-600">
+              <Link
+                to="/my-company"
+                className="flex items-center gap-2 hover:text-purple-600"
+              >
                 <Building2 size={18} /> Mi Compañía
               </Link>
-              <Link to="/clients" className="flex items-center gap-2 hover:text-purple-600">
+              <Link
+                to="/clients"
+                className="flex items-center gap-2 hover:text-purple-600"
+              >
                 <User2Icon size={18} /> Clientes
               </Link>
-              <Link to="/debts" className="flex items-center gap-2 hover:text-purple-600">
+              <Link
+                to="/debts"
+                className="flex items-center gap-2 hover:text-purple-600"
+              >
                 <MonitorCheck size={18} /> Deudas
               </Link>
               <span className="flex items-center gap-2 text-gray-400 cursor-not-allowed">
@@ -88,7 +97,7 @@ export default function Sidebar() {
       {isMobile && isOpen && (
         <div
           onClick={toggleSidebar}
-          className="fixed inset-0 bg-black bg-opacity-40 z-30"
+          className="fixed inset-0 z-30 backdrop-blur-sm bg-white/30 transition duration-300"
         />
       )}
     </>
