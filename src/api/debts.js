@@ -14,3 +14,6 @@ export const getDebtsByClientRequest = async (clientId) =>
 export const searchDebtsByStatusRequest = async (clientId, status) =>
   axios.get(`/clients/${clientId}/debts/search?status=${status}`);
 
+export const updateDebtStatusRequest = async (debtId, status) =>
+  axios.put(`/debts/${debtId}?status=${status}`);
+

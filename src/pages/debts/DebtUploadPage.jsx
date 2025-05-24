@@ -6,6 +6,7 @@ import FileUploadForm from "../../components/clients/FileUploadForm";
 import DebtTable from "../../components/debts/DebtTable";
 import DebtSearchBar from "../../components/debts/DebtSearchBar";
 import Pagination from "../../components/clients/Pagination";
+import DebtModal from "../../components/debts/DebtModal";
 
 function DebtUploadPage() {
   const { debts, uploadDebtsCSV } = useDebts();
@@ -156,6 +157,12 @@ function DebtUploadPage() {
             onPageChange={setCurrentPage}
           />
         </section>
+        {selectedDebt && (
+          <DebtModal
+            debt={selectedDebt}
+            onClose={() => setSelectedDebt(null)}
+          />
+        )}
       </main>
     </div>
   );

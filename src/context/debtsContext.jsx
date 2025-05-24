@@ -4,6 +4,7 @@ import {
   getAllDebtsRequest,
   getDebtsByClientRequest,
   searchDebtsByStatusRequest,
+  updateDebtStatusRequest,
 } from "../api/debts";
 import { useAuth } from "./authContext";
 
@@ -58,6 +59,15 @@ export const DebtsProvider = ({ children }) => {
     }
   };
 
+  const updateDebtStatus = async (debtId, newStatus) => {
+    try {
+      await updateDebtStatusRequest(debtId, newStatus);
+      await loadDebts();
+    } catch (error) {
+      console.error("Error actualizando estado de deuda:", error);
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       loadDebts();
@@ -73,6 +83,7 @@ export const DebtsProvider = ({ children }) => {
         loadDebts,
         getDebtsByClient,
         searchDebtsByStatus,
+        updateDebtStatus,
       }}
     >
       {children}
