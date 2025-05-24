@@ -19,20 +19,12 @@ export function ResetPasswordPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar contraseñas antes de enviar
     if (newPassword !== confirmPassword) {
       setLocalError("Las contraseñas no coinciden.");
       return;
     }
 
     setLocalError("");
-
-    console.log("Datos enviados:", {
-      email,
-      otp,
-      new_password: newPassword,
-      confirm_password: confirmPassword,
-    });
 
     await resetPassword({
       email,
@@ -43,20 +35,19 @@ export function ResetPasswordPage() {
 
     setMessage("Contraseña restablecida con éxito");
 
-    // Esperar 3 segundos antes de redirigir
     setTimeout(() => {
       navigate("/login");
     }, 3000);
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="p-8 shadow-lg rounded-xl bg-white w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md p-6 sm:p-8 shadow-lg rounded-xl bg-white">
         <Heading
           title="Restablecer Contraseña"
           subtitle="Ingresa el OTP y la nueva contraseña"
         />
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <Input
             name="email"
             placeholder="Correo electrónico"

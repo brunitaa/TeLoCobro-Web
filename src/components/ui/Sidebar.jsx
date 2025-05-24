@@ -24,27 +24,23 @@ export default function Sidebar() {
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
 
-  // Escuchar cambios de tamaño
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
-
     const handleResize = (e) => {
       setIsMobile(e.matches);
-      setIsOpen(!e.matches); // cerrado si es móvil
+      setIsOpen(!e.matches);
     };
-
     mediaQuery.addEventListener("change", handleResize);
-    handleResize(mediaQuery); // inicializa correctamente
-
+    handleResize(mediaQuery);
     return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
 
   return (
     <>
-      {/* Botón hamburguesa para móvil */}
+      {/* Botón hamburguesa */}
       {isMobile && (
         <button
-          className="fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md"
+          className="fixed top-4 left-4 z-50 bg-white border border-gray-200 p-2 rounded-full shadow"
           onClick={toggleSidebar}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -53,28 +49,37 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 w-64 h-screen bg-white shadow-md p-6 z-40 transform transition-transform duration-300 ease-in-out
+        className={`fixed top-0 left-0 w-64 h-screen bg-white border-r border-gray-200 z-40 shadow-sm transform transition-transform duration-300 ease-in-out
         ${isMobile ? (isOpen ? "translate-x-0" : "-translate-x-full") : ""}`}
       >
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col justify-between h-full px-6 py-4">
           <div>
-            <h2 className="text-2xl font-bold text-blue-600 mb-8">TeLoCobro</h2>
+            {/* Branding con padding condicional */}
+            <h2
+              className={`text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-500 mb-8 transition-all duration-300 ${
+                isMobile && isOpen ? "pl-10" : ""
+              }`}
+            >
+              TeLoCobro
+            </h2>
+
+            {/* Navegación */}
             <nav className="flex flex-col space-y-4 text-gray-700 font-medium">
               <Link
                 to="/my-company"
-                className="flex items-center gap-2 hover:text-purple-600"
+                className="flex items-center gap-2 hover:text-blue-600"
               >
                 <Building2 size={18} /> Mi Compañía
               </Link>
               <Link
                 to="/clients"
-                className="flex items-center gap-2 hover:text-purple-600"
+                className="flex items-center gap-2 hover:text-blue-600"
               >
                 <User2Icon size={18} /> Clientes
               </Link>
               <Link
                 to="/debts"
-                className="flex items-center gap-2 hover:text-purple-600"
+                className="flex items-center gap-2 hover:text-blue-600"
               >
                 <MonitorCheck size={18} /> Deudas
               </Link>
@@ -97,7 +102,7 @@ export default function Sidebar() {
       {isMobile && isOpen && (
         <div
           onClick={toggleSidebar}
-          className="fixed inset-0 z-30 backdrop-blur-sm bg-white/30 transition duration-300"
+          className="fixed inset-0 z-30 backdrop-blur-sm bg-black/20 transition duration-300"
         />
       )}
     </>
