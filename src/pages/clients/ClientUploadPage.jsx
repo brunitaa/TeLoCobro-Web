@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useClients } from "../../context/clientsContext";
 import Sidebar from "../../components/ui/Sidebar";
@@ -5,6 +7,8 @@ import ClientTable from "../../components/clients/ClientTable";
 import ClientModal from "../../components/clients/ClientModal";
 import FileUploadForm from "../../components/clients/FileUploadForm";
 import Pagination from "../../components/clients/Pagination";
+import EmptyState from "../../components/ui/EmptyState";
+import Toast from "../../components/ui/ToastNotifier";
 
 function ClientUploadPage() {
   const { clients, uploadCSV, loading, loadClients } = useClients();
@@ -18,6 +22,8 @@ function ClientUploadPage() {
   const [sortField, setSortField] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
+  const [toast, setToast] = useState({ visible: false, type: "success", message: "" });
+
   const pageSize = 10;
 
   useEffect(() => {
@@ -47,11 +53,18 @@ function ClientUploadPage() {
     e.preventDefault();
     if (!file) {
       setFileError("Selecciona un archivo CSV.");
+      setToast({ visible: true, type: "warning", message: "Debes elegir un archivo CSV antes de subir." });
       return;
     }
 
-    await uploadCSV(file);
-    setFile(null);
+    try {
+      await uploadCSV(file);
+      setToast({ visible: true, type: "success", message: "¡Archivo CSV subido correctamente!" });
+      setFile(null);
+    } catch (error) {
+      setFileError("Hubo un error al subir el archivo.");
+      setToast({ visible: true, type: "danger", message: "Intenta nuevamente con un archivo válido." });
+    }
   };
 
   const handleSelectClient = (client) => {
@@ -133,7 +146,10 @@ function ClientUploadPage() {
           {loading ? (
             <p className="text-gray-600">Cargando clientes...</p>
           ) : paginatedClients.length === 0 ? (
-            <p className="text-gray-500">No hay clientes registrados.</p>
+            <EmptyState
+              title="No hay clientes registrados"
+              subtitle="Carga un archivo CSV o añade clientes manualmente para comenzar."
+            />
           ) : (
             <>
               <ClientTable
@@ -158,6 +174,13 @@ function ClientUploadPage() {
             onClose={() => setShowModal(false)}
           />
         )}
+
+        <Toast
+          visible={toast.visible}
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast({ ...toast, visible: false })}
+        />
       </main>
     </div>
   );

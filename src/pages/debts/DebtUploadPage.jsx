@@ -7,6 +7,8 @@ import DebtTable from "../../components/debts/DebtTable";
 import DebtSearchBar from "../../components/debts/DebtSearchBar";
 import Pagination from "../../components/clients/Pagination";
 import DebtModal from "../../components/debts/DebtModal";
+import EmptyState from "../../components/ui/EmptyState";
+import Toast from "../../components/ui/ToastNotifier";
 
 function DebtUploadPage() {
   const { debts, uploadDebtsCSV } = useDebts();
@@ -14,6 +16,7 @@ function DebtUploadPage() {
   const [file, setFile] = useState(null);
   const [fileError, setFileError] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [toast, setToast] = useState({ visible: false, type: "success", message: "" });
   const [filterByStatus, setFilterByStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDebt, setSelectedDebt] = useState(null);
@@ -46,15 +49,18 @@ function DebtUploadPage() {
     e.preventDefault();
     if (!file) {
       setFileError("Selecciona un archivo CSV.");
+      setToast({ visible: true, type: "warning", message: "Debes elegir un archivo CSV antes de subir." });
       return;
     }
 
     try {
       await uploadDebtsCSV(file);
       setUploadSuccess(true);
+      setToast({ visible: true, type: "success", message: "¡Archivo CSV subido correctamente!" });
       setFile(null);
     } catch (error) {
       setFileError("Hubo un error al subir el archivo. Intenta nuevamente.");
+      setToast({ visible: true, type: "danger", message: "Hubo un error al subir el archivo." });
     }
   };
 
@@ -70,13 +76,9 @@ function DebtUploadPage() {
   const filteredDebts = debts.filter(
     (debt) =>
       (!filterByStatus || debt.status === filterByStatus) &&
-      (debt.invoice_number
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
+      (debt.invoice_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (typeof debt.client_id === "object" &&
-          debt.client_id.name
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase())))
+          debt.client_id.name?.toLowerCase().includes(searchTerm.toLowerCase())))
   );
 
   const sortedDebts = [...filteredDebts].sort((a, b) => {
@@ -126,43 +128,57 @@ function DebtUploadPage() {
           handleUpload={handleUpload}
         />
 
-        {uploadSuccess && (
-          <p className="text-green-600 font-semibold text-center mt-4">
-            ¡Archivo CSV subido correctamente!
-          </p>
-        )}
-
         <section className="max-w-5xl mx-auto bg-white p-6 rounded shadow mt-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-            <h2 className="text-2xl font-semibold text-gray-800">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4 w-full">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
               Lista de Deudas
             </h2>
-            <DebtSearchBar
-              filterByStatus={filterByStatus}
-              setFilterByStatus={setFilterByStatus}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
+            <div className="w-full sm:w-auto">
+              <DebtSearchBar
+                filterByStatus={filterByStatus}
+                setFilterByStatus={setFilterByStatus}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+              />
+            </div>
           </div>
-          <DebtTable
-            debts={paginatedDebts}
-            onSelectDebt={setSelectedDebt}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-          />
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+
+          {paginatedDebts.length === 0 ? (
+            <EmptyState
+              title="No hay deudas registradas"
+              subtitle="Sube un archivo CSV o añade manualmente registros para comenzar."
+            />
+          ) : (
+            <>
+              <DebtTable
+                debts={paginatedDebts}
+                onSelectDebt={setSelectedDebt}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={handleSort}
+              />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </>
+          )}
         </section>
+
         {selectedDebt && (
           <DebtModal
             debt={selectedDebt}
             onClose={() => setSelectedDebt(null)}
           />
         )}
+
+        <Toast
+          visible={toast.visible}
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast({ ...toast, visible: false })}
+        />
       </main>
     </div>
   );
