@@ -19,22 +19,21 @@ export function ConfirmAccountPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const newErrors = {};
     if (!email) newErrors.email = "Correo requerido";
     if (!otp) newErrors.otp = "Código requerido";
-  
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-  
+
     try {
       await confirmAccount({ email, otp });
       setMessage("Cuenta confirmada con éxito");
       setSuccess(true);
 
-      // Espera 2 segundos antes de redirigir al login
       setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
       console.error(error);
@@ -44,47 +43,49 @@ export function ConfirmAccountPage() {
   };
 
   return (
-    <Card>
-      <Heading
-        title="Confirma tu cuenta"
-        subtitle="Revisa tu correo e ingresa el código"
-        center
-      />
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          name="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setErrors((prev) => ({ ...prev, email: "" }));
-          }}
-          icon={<FiMail />}
-          error={errors.email}
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md p-6 sm:p-8 shadow-lg rounded-xl bg-white">
+        <Heading
+          title="Confirma tu cuenta"
+          subtitle="Revisa tu correo e ingresa el código"
+          center
         />
-        <Input
-          name="otp"
-          placeholder="Código de verificación"
-          value={otp}
-          onChange={(e) => {
-            setOtp(e.target.value);
-            setErrors((prev) => ({ ...prev, otp: "" }));
-          }}
-          icon={<FiKey />}
-          error={errors.otp}
-        />
-        <Button type="submit" label="Confirmar Cuenta" />
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <Input
+            name="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors((prev) => ({ ...prev, email: "" }));
+            }}
+            icon={<FiMail />}
+            error={errors.email}
+          />
+          <Input
+            name="otp"
+            placeholder="Código de verificación"
+            value={otp}
+            onChange={(e) => {
+              setOtp(e.target.value);
+              setErrors((prev) => ({ ...prev, otp: "" }));
+            }}
+            icon={<FiKey />}
+            error={errors.otp}
+          />
+          <Button type="submit" label="Confirmar Cuenta" />
+        </form>
 
-      {message && (
-        <p
-          className={`text-sm text-center mt-4 ${
-            success ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {message}
-        </p>
-      )}
-    </Card>
+        {message && (
+          <p
+            className={`text-sm text-center mt-4 ${
+              success ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+      </Card>
+    </div>
   );
 }

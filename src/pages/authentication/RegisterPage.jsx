@@ -1,5 +1,5 @@
-import { useAuth } from "../../context/authContext"; // Importar el contexto
-import { useLocation } from "../../context/locationContext"; // Importar contexto para países, estados y ciudades
+import { useAuth } from "../../context/authContext";
+import { useLocation } from "../../context/locationContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { signUpSchema } from "../../schemas/auth";
@@ -17,7 +17,7 @@ function RegisterPage() {
     cities,
     setSelectedCountry,
     setSelectedState,
-    setCities, // Asegurarnos de que tenemos una función para setear las ciudades
+    setCities, 
     selectedCountry,
     selectedState,
     loading,
@@ -50,16 +50,15 @@ function RegisterPage() {
   const handleCountryChange = (e) => {
     const countryId = e.target.value;
     setSelectedCountry(countryId || "");
-    setSelectedState(""); // Resetear estado cuando cambie el país
-    setCities([]); // Limpiar ciudades al cambiar el país
+    setSelectedState(""); 
+    setCities([]); 
   };
 
   const handleStateChange = (e) => {
     const stateId = e.target.value;
     setSelectedState(stateId || "");
-    // Filtrar las ciudades para el estado seleccionado
     const filteredCities = cities.filter((city) => city.state_id === stateId);
-    setCities(filteredCities); // Actualizar las ciudades disponibles para el estado seleccionado
+    setCities(filteredCities); 
   };
 
   const handleCityChange = (e) => {
