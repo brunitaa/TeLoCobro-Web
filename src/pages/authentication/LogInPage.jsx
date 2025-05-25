@@ -1,86 +1,43 @@
-import { useAuth } from "../../context/authContext";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React from 'react';
-import { signInSchema } from "../../schemas/auth";
-import { Card } from "../../components/ui/Card";
-import { Button } from "../../components/ui/Button";
-import { Heading } from "../../components/ui/Heading";
-import { Input } from "../../components/ui/Input";
-import { FiMail, FiLock } from "react-icons/fi";
+/* eslint-disable no-unused-vars */
+import LoginForm from "../../components/auth/LoginForm";
+import Illustration from "../../assets/login-illustration.png";
+import { motion } from "framer-motion";
 
 export function LoginPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(signInSchema),
-  });
-
-  const { signin, errors: loginErrors, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  const onSubmit = async (data) => {
-    await signin(data);
-  };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    }
-  }, [isAuthenticated, navigate]);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <Card className="p-8 shadow-lg rounded-xl bg-white w-full max-w-md">
-        <Heading
-          title="Iniciar Sesión"
-          subtitle="Ingresa tus credenciales para acceder"
-          center
-        />
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
-          <Input
-            name="email"
-            placeholder="Correo electrónico"
-            type="email"
-            {...register("email")}
-            icon={<FiMail />}
-            error={errors.email}
-          />
-          <Input
-            name="password"
-            placeholder="Contraseña"
-            type="password"
-            {...register("password")}
-            icon={<FiLock />}
-            error={errors.password}
-          />
-          <div className="text-sm text-right">
-            <Link to="/forgot-password" className="text-blue-600 hover:underline">
-              ¿Olvidaste tu contraseña?
-            </Link>
-          </div>
-          <Button
-            type="submit"
-            label={loginErrors ? "iniciar sesión" : "Iniciar Sesión"}
-            disabled={false}
-            className="w-full"
-          />
-          {loginErrors && (
-            <p className="text-sm text-center mt-2 text-red-600">{loginErrors}</p>
-          )}
-        </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 px-4 py-10">
+      {/* Card contenedora */}
+      <motion.div
+        className="bg-white rounded-3xl shadow-2xl p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 w-full max-w-6xl"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        {/* Formulario */}
+        <motion.div
+          className="w-full md:w-1/2"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <LoginForm />
+        </motion.div>
 
-        <div className="text-center mt-6 text-sm">
-          ¿No tienes cuenta?{" "}
-          <Link to="/register" className="text-blue-600 hover:underline">
-            Regístrate
-          </Link>
-        </div>
-      </Card>
+        {/* Imagen ilustrativa */}
+        <motion.div
+          className="w-full md:w-1/2 flex justify-center"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <img
+            src={Illustration}
+            alt="Ilustración de inicio de sesión"
+            className="w-[220px] sm:w-[280px] md:w-[320px] lg:w-[400px] animate-float"
+            loading="lazy"
+          />
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
