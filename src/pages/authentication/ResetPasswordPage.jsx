@@ -1,92 +1,36 @@
-import React, { useState } from "react";
-import { useAuth } from "../../context/authContext";
-import { Input } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
-import { Heading } from "../../components/ui/Heading";
-import { useNavigate } from "react-router-dom";
-import { Card } from "../../components/ui/Card";
+/* eslint-disable no-unused-vars */
+import { motion } from "framer-motion";
+import ResetPasswordForm from "../../components/auth/ResetPasswordForm";
+import Illustration from "../../assets/reset-illustration.png";
 
 export function ResetPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [localError, setLocalError] = useState("");
-  const { resetPassword, errors } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (newPassword !== confirmPassword) {
-      setLocalError("Las contraseñas no coinciden.");
-      return;
-    }
-
-    setLocalError("");
-
-    await resetPassword({
-      email,
-      otp,
-      newPassword,
-      confirmPassword,
-    });
-
-    setMessage("Contraseña restablecida con éxito");
-
-    setTimeout(() => {
-      navigate("/login");
-    }, 3000);
-  };
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md p-6 sm:p-8 shadow-lg rounded-xl bg-white">
-        <Heading
-          title="Restablecer Contraseña"
-          subtitle="Ingresa el OTP y la nueva contraseña"
-        />
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <Input
-            name="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={errors.email}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+      <motion.div
+        className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Formulario */}
+        <div className="w-full md:w-1/2 p-6 sm:p-10 flex items-center justify-center">
+          <ResetPasswordForm />
+        </div>
+
+        {/* Ilustración */}
+        <motion.div
+          className="w-full md:w-1/2 flex items-center justify-center bg-white p-6"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
+        >
+          <img
+            src={Illustration}
+            alt="Ilustración reset"
+            className="w-[220px] sm:w-[280px] md:w-[320px] lg:w-[380px] xl:w-[420px] h-auto drop-shadow-2xl"
+            loading="lazy"
           />
-          <Input
-            name="otp"
-            placeholder="OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            error={errors.otp}
-          />
-          <Input
-            name="newPassword"
-            placeholder="Nueva Contraseña"
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            error={errors.newPassword}
-          />
-          <Input
-            name="confirmPassword"
-            placeholder="Confirmar Contraseña"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            error={errors.confirmPassword}
-          />
-          {localError && (
-            <p className="text-red-500 text-sm text-center">{localError}</p>
-          )}
-          <Button type="submit" label="Restablecer Contraseña" />
-        </form>
-        {message && (
-          <p className="text-center mt-4 text-green-600">{message}</p>
-        )}
-      </Card>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

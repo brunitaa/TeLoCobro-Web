@@ -1,229 +1,41 @@
-import { useAuth } from "../../context/authContext";
-import { useLocation } from "../../context/locationContext";
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { signUpSchema } from "../../schemas/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Card } from "../../components/ui/Card";
-import { Heading } from "../../components/ui/Heading";
-import { Input } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
+/* eslint-disable no-unused-vars */
+import { motion } from "framer-motion";
+import Illustration from "../../assets/register-illustration.png";
+import RegisterForm from "../../components/auth/RegisterForm";
 
-function RegisterPage() {
-  const { signup, errors: registerErrors} = useAuth();
-  const {
-    countries,
-    states,
-    cities,
-    setSelectedCountry,
-    setSelectedState,
-    setCities, 
-    selectedCountry,
-    selectedState,
-    loading,
-  } = useLocation();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm({
-    resolver: zodResolver(signUpSchema),
-  });
-
-  const navigate = useNavigate();
-
-  const onSubmit = async (data) => {
-  try {
-    const response = await signup(data);
-    console.log("Registro exitoso:", response);
-
-    if (response) {
-      navigate("/confirm-account");
-    }
-  } catch (error) {
-    console.error("Error en el registro:", error);
-  }
-};
-
-  const handleCountryChange = (e) => {
-    const countryId = e.target.value;
-    setSelectedCountry(countryId || "");
-    setSelectedState(""); 
-    setCities([]); 
-  };
-
-  const handleStateChange = (e) => {
-    const stateId = e.target.value;
-    setSelectedState(stateId || "");
-    const filteredCities = cities.filter((city) => city.state_id === stateId);
-    setCities(filteredCities); 
-  };
-
-  const handleCityChange = (e) => {
-    const cityId = e.target.value;
-    setValue("city_id", cityId || "");
-  };
-
+export default function RegisterPage() {
   return (
-    <div className="max-w-xl mx-auto mt-10">
-      <Card className="p-8 shadow-xl rounded-2xl bg-white space-y-6">
-        <Heading
-          title="Registro de Usuario"
-          subtitle="Crea tu cuenta para comenzar"
-          center
-        />
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input
-            {...register("first_name")}
-            placeholder="Nombre"
-            error={errors.first_name}
-          />
-          <Input
-            {...register("last_name")}
-            placeholder="Apellido"
-            error={errors.last_name}
-          />
-          <Input
-            {...register("ci")}
-            placeholder="Cédula de Identidad"
-            error={errors.ci}
-          />
-          <Input
-            {...register("email")}
-            placeholder="Correo electrónico"
-            error={errors.email}
-          />
-          <Input
-            {...register("phone_number")}
-            placeholder="Número de teléfono"
-            error={errors.phone_number}
-          />
-          <div className="relative">
-            <input
-              type="date"
-              {...register("date_of_birth")}
-              className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300"
-            />
-            {errors.date_of_birth && (
-              <p className="text-sm text-red-600">
-                {errors.date_of_birth.message}
-              </p>
-            )}
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+      <motion.div
+        className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl flex flex-col-reverse md:flex-row overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Formulario */}
+        <motion.div
+          className="w-full md:w-1/2 p-6 sm:p-10 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <RegisterForm />
+        </motion.div>
 
-          <select
-            {...register("gender")}
-            className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300"
-          >
-            <option value="">Selecciona género</option>
-            <option value="female">Femenino</option>
-            <option value="male">Masculino</option>
-            <option value="other">Otro</option>
-          </select>
-          {errors.gender && (
-            <p className="text-sm text-red-600">{errors.gender.message}</p>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* País - solo para visualización */}
-            <select
-              className="p-3 rounded-lg bg-gray-50 border border-gray-300"
-              onChange={handleCountryChange}
-              value={selectedCountry || ""}
-            >
-              <option value="">País</option>
-              {countries.length > 0 ? (
-                countries.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name}
-                  </option>
-                ))
-              ) : (
-                <option disabled>No hay países disponibles</option>
-              )}
-            </select>
-
-            {/* Estado - solo para visualización */}
-            <select
-              className="p-3 rounded-lg bg-gray-50 border border-gray-300"
-              onChange={handleStateChange}
-              value={selectedState || ""}
-              disabled={!states.length}
-            >
-              <option value="">Departamento</option>
-              {states.map((s) => (
-                <option key={s._id} value={s._id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-
-            {/* Ciudad - esta sí se envía al backend */}
-            <select
-              {...register("city_id")}
-              className="p-3 rounded-lg bg-gray-50 border border-gray-300"
-              onChange={handleCityChange}
-              defaultValue=""
-              disabled={!cities.length}
-            >
-              <option value="">Ciudad</option>
-              {cities.map((c) => (
-                <option key={c._id} value={c._id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          {errors.city_id && (
-            <p className="text-sm text-red-600">{errors.city_id.message}</p>
-          )}
-
-          <Input
-            {...register("password")}
-            type="password"
-            placeholder="Contraseña"
-            error={errors.password}
+        {/* Ilustración */}
+        <motion.div
+          className="hidden md:flex w-full md:w-1/2 items-center justify-center bg-white p-6"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
+        >
+          <img
+            src={Illustration}
+            alt="Ilustración de registro"
+            className="w-[300px] lg:w-[360px] xl:w-[400px] h-auto drop-shadow-2xl"
+            loading="lazy"
           />
-          <Input
-            {...register("confirm_password")}
-            type="password"
-            placeholder="Confirmar contraseña"
-            error={errors.confirm_password}
-          />
-
-          <Button
-            type="submit"
-            label={loading ? "Registrando..." : "Registrarse"}
-            disabled={loading}
-            className="w-full"
-          />
-          {Array.isArray(registerErrors)
-            ? registerErrors.map((err, idx) => (
-                <p key={idx} className="text-sm text-center mt-2 text-red-600">
-                  {err}
-                </p>
-              ))
-            : registerErrors && (
-                <p className="text-sm text-center mt-2 text-red-600">
-                  {registerErrors}
-                </p>
-              )}
-        </form>
-
-        <p className="text-center text-sm text-gray-600">
-          ¿Ya tienes una cuenta?{" "}
-          <Link
-            to="/login"
-            className="text-blue-600 hover:underline font-semibold"
-          >
-            Inicia sesión
-          </Link>
-        </p>
-      </Card>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
-
-export default RegisterPage;
