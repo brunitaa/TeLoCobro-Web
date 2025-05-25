@@ -41,19 +41,28 @@ export default function HeroSection() {
           </button>
         </motion.div>
 
-        {/* Ilustración */}
+        {/* Ilustración animada levitando */}
         <motion.div
-          className="w-[180px] sm:w-[260px] md:w-[320px] lg:w-[400px] mb-10 lg:mb-0"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
+          className="w-[280px] sm:w-[260px] md:w-[320px] lg:w-[400px] mt-20 lg:mt-0"
+          animate={{ y: [0, -10, 0] }}
+          transition={{
+            duration: 4,
+            ease: "easeInOut",
+            repeat: Infinity,
+            repeatType: "loop",
+          }}
         >
-          <img src={Illustration} alt="Ilustración" className="w-full h-auto" />
+          <img
+            src={Illustration}
+            alt="Ilustración"
+            className="w-full h-auto"
+            loading="lazy"
+          />
         </motion.div>
       </div>
 
       {/* Curva Inferior */}
-      <div className="absolute bottom-[-1px] left-0 right-0 w-screen z-20 overflow-hidden">
+      <div className="absolute bottom-[-1px] left-0 right-0 w-screen z-0 overflow-hidden">
         <svg
           viewBox="0 0 1440 320"
           preserveAspectRatio="none"
@@ -73,16 +82,16 @@ export default function HeroSection() {
         </svg>
       </div>
 
-      {/* Modal personalizado */}
+      {/* Modal funcional en cualquier pantalla */}
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         hideCloseButton
-        backdrop="blur"
         placement="center"
+        backdrop="blur"
         classNames={{
-          base: "relative max-w-lg mx-auto rounded-2xl bg-white/90 shadow-2xl backdrop-blur-md",
-          backdrop: "bg-black/30 backdrop-blur-sm",
+          base: "relative max-w-lg mx-auto rounded-2xl bg-white shadow-2xl",
+          backdrop: "bg-black/30",
         }}
       >
         <ModalContent>
@@ -115,8 +124,11 @@ export default function HeroSection() {
                 </p>
               </ModalBody>
 
-              <ModalFooter className="px-6 pb-6">
-                <Button color="primary" onPress={onClose}>
+              <ModalFooter className="px-6 pb-6 justify-end">
+                <Button
+                  onPress={onClose}
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full px-6 py-2 shadow-md hover:shadow-lg transition"
+                >
                   ¡Entendido!
                 </Button>
               </ModalFooter>
