@@ -1,14 +1,26 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import ClientRow from "./ClientRow";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 function ClientTable({ clients, onSelectClient, sortField, sortOrder, onSort }) {
   const renderSortIcon = (field) => {
     if (sortField !== field) return null;
-    return sortOrder === "asc" ? (
-      <ChevronUp size={14} className="inline ml-1" />
-    ) : (
-      <ChevronDown size={14} className="inline ml-1" />
+    return (
+      <motion.span
+        key={sortOrder}
+        initial={{ rotate: sortOrder === "asc" ? 180 : 0 }}
+        animate={{ rotate: sortOrder === "asc" ? 0 : 180 }}
+        transition={{ duration: 0.2 }}
+        className="inline-block ml-1"
+      >
+        {sortOrder === "asc" ? (
+          <ChevronUp size={14} />
+        ) : (
+          <ChevronDown size={14} />
+        )}
+      </motion.span>
     );
   };
 
@@ -20,7 +32,12 @@ function ClientTable({ clients, onSelectClient, sortField, sortOrder, onSort }) 
   ];
 
   return (
-    <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="overflow-x-auto rounded-lg shadow border border-gray-200"
+    >
       <table className="min-w-full text-sm text-gray-700">
         <thead className="bg-gradient-to-r from-blue-100 to-purple-100 text-gray-800 font-semibold text-left">
           <tr>
@@ -49,7 +66,7 @@ function ClientTable({ clients, onSelectClient, sortField, sortOrder, onSort }) 
           ))}
         </tbody>
       </table>
-    </div>
+    </motion.div>
   );
 }
 

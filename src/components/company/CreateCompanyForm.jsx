@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import CompanyForm from "./CompanyForm";
 import { useCompany } from "../../context/companyContext";
 import { useLocation } from "../../context/locationContext";
@@ -77,23 +79,29 @@ const CreateCompanyForm = () => {
   };
 
   return (
-    <CompanyForm
-      formData={formData}
-      setFormData={setFormData}
-      onChange={handleChange}
-      onCountryChange={handleCountryChange}
-      onStateChange={handleStateChange}
-      onCityChange={handleCityChange}
-      selectedCountry={selectedCountry}
-      selectedState={selectedState}
-      countries={countries}
-      states={states}
-      cities={cities}
-      onSubmit={handleSubmit}
-      loading={loading}
-      locationLoading={locationLoading}
-      submitLabel="Registrar"
-    />
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <CompanyForm
+        formData={formData}
+        setFormData={setFormData}
+        onChange={handleChange}
+        onCountryChange={handleCountryChange}
+        onStateChange={handleStateChange}
+        onCityChange={handleCityChange}
+        selectedCountry={selectedCountry}
+        selectedState={selectedState}
+        countries={countries}
+        states={states}
+        cities={cities}
+        onSubmit={handleSubmit}
+        loading={loading}
+        locationLoading={locationLoading}
+        submitLabel="Registrar"
+      />
+    </motion.div>
   );
 };
 

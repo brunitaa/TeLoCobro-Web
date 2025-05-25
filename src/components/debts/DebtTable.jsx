@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import DebtRow from "./DebtRow";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 function DebtTable({ debts, onSelectDebt, sortField, sortOrder, onSort }) {
   const headers = [
@@ -15,15 +17,26 @@ function DebtTable({ debts, onSelectDebt, sortField, sortOrder, onSort }) {
 
   const renderSortIcon = (field) => {
     if (sortField !== field) return null;
-    return sortOrder === "asc" ? (
-      <ChevronUp size={14} className="inline ml-1" />
-    ) : (
-      <ChevronDown size={14} className="inline ml-1" />
+    return (
+      <motion.span
+        key={sortOrder}
+        initial={{ rotate: sortOrder === "asc" ? 180 : 0 }}
+        animate={{ rotate: sortOrder === "asc" ? 0 : 180 }}
+        transition={{ duration: 0.2 }}
+        className="inline-block ml-1"
+      >
+        {sortOrder === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+      </motion.span>
     );
   };
 
   return (
-    <div className="w-full overflow-x-auto rounded-lg shadow border border-gray-200 mt-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="w-full overflow-x-auto rounded-lg shadow border border-gray-200 mt-8"
+    >
       <table className="w-full text-sm text-gray-700 min-w-[700px]">
         <thead className="bg-gradient-to-r from-blue-100 to-purple-100 text-gray-800 font-semibold text-left">
           <tr>
@@ -51,7 +64,7 @@ function DebtTable({ debts, onSelectDebt, sortField, sortOrder, onSort }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </motion.div>
   );
 }
 

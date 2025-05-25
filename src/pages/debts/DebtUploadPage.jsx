@@ -128,7 +128,7 @@ function DebtUploadPage() {
           handleUpload={handleUpload}
         />
 
-        <section className="max-w-5xl mx-auto bg-white p-6 rounded shadow mt-8">
+       <section className="w-full bg-white p-4 sm:p-6 rounded shadow mt-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4 w-full">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
               Lista de Deudas

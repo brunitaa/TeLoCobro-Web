@@ -9,6 +9,7 @@ import FileUploadForm from "../../components/clients/FileUploadForm";
 import Pagination from "../../components/clients/Pagination";
 import EmptyState from "../../components/ui/EmptyState";
 import Toast from "../../components/ui/ToastNotifier";
+import ClientSearchBar from "../../components/clients/ClientSearchBar";
 
 function ClientUploadPage() {
   const { clients, uploadCSV, loading, loadClients } = useClients();
@@ -22,7 +23,11 @@ function ClientUploadPage() {
   const [sortField, setSortField] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [toast, setToast] = useState({ visible: false, type: "success", message: "" });
+  const [toast, setToast] = useState({
+    visible: false,
+    type: "success",
+    message: "",
+  });
 
   const pageSize = 10;
 
@@ -53,17 +58,29 @@ function ClientUploadPage() {
     e.preventDefault();
     if (!file) {
       setFileError("Selecciona un archivo CSV.");
-      setToast({ visible: true, type: "warning", message: "Debes elegir un archivo CSV antes de subir." });
+      setToast({
+        visible: true,
+        type: "warning",
+        message: "Debes elegir un archivo CSV antes de subir.",
+      });
       return;
     }
 
     try {
       await uploadCSV(file);
-      setToast({ visible: true, type: "success", message: "¡Archivo CSV subido correctamente!" });
+      setToast({
+        visible: true,
+        type: "success",
+        message: "¡Archivo CSV subido correctamente!",
+      });
       setFile(null);
     } catch (error) {
       setFileError("Hubo un error al subir el archivo.");
-      setToast({ visible: true, type: "danger", message: "Intenta nuevamente con un archivo válido." });
+      setToast({
+        visible: true,
+        type: "danger",
+        message: "Intenta nuevamente con un archivo válido.",
+      });
     }
   };
 
@@ -118,27 +135,16 @@ function ClientUploadPage() {
         />
 
         <section className="w-full bg-white p-4 sm:p-6 rounded shadow mt-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 w-full">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
               Lista de Clientes
             </h2>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <select
-                value={filterBy}
-                onChange={(e) => setFilterBy(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-              >
-                <option value="name">Nombre</option>
-                <option value="nit">NIT</option>
-                <option value="email">Email</option>
-                <option value="phone_number">Teléfono</option>
-              </select>
-              <input
-                type="text"
-                placeholder={`Buscar por ${filterBy}...`}
-                className="border border-gray-300 rounded px-3 py-1 text-sm w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+            <div className="w-full sm:w-auto">
+              <ClientSearchBar
+                filterBy={filterBy}
+                setFilterBy={setFilterBy}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
               />
             </div>
           </div>
