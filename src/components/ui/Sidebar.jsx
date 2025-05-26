@@ -10,6 +10,7 @@ import {
   MonitorCheck,
   Menu,
   X,
+  BarChart3,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -95,6 +96,12 @@ export default function Sidebar() {
                     icon={<MonitorCheck size={18} />}
                     text="Deudas"
                     active={pathname === "/debts"}
+                  />
+                  <SidebarLink
+                    to="/analytics"
+                    icon={<BarChart3 size={18} />}
+                    text="Análisis"
+                    active={pathname === "/analytics"}
                   />
 
                   <span className="flex items-center gap-2 text-gray-400 cursor-not-allowed">

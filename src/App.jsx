@@ -19,38 +19,43 @@ import { ClientsProvider } from "./context/clientsContext.jsx";
 import CompanyScreenDecider from "./components/company/CompanyScreenDecider";
 import { DebtsProvider } from "./context/debtsContext.jsx";
 import DebtUploadPage from "./pages/debts/DebtUploadPage.jsx";
+import DashboardAnalytics from "./pages/analytics/DashboardAnalytics.jsx";
+import { CurrencyProvider } from "./context/currencyContext.jsx";
 
 function App() {
   return (
-    <AuthProvider>
-      <DebtsProvider>
-      <ClientsProvider>
-      <LocationProvider>
-        <CompanyProvider>
-          <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/confirm-account" element={<ConfirmAccountPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route element={<ProtectedRoute />}>
-                    <Route path="/register-company" element={<CompanyRegistrationPage />} />
-                    <Route path="/view-company" element={<ViewCompanyPage />} />
-                    <Route path="/edit-company" element={<EditCompanyPage />} />
-                    <Route path="/clients" element={<ClientUploadPage/>} />
-                    <Route path="/dashboard" element={<DashBoardPage />} />
-                    <Route path="/my-company" element={<CompanyScreenDecider />} />
-                    <Route path="/debts" element={<DebtUploadPage/>}/>
-                </Route>
-              </Routes>
-          </BrowserRouter>
-        </CompanyProvider>
-      </LocationProvider>
-      </ClientsProvider>
-      </DebtsProvider>
-    </AuthProvider>
+    <CurrencyProvider>
+      <AuthProvider>
+        <DebtsProvider>
+          <ClientsProvider>
+            <LocationProvider>
+              <CompanyProvider>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/confirm-account" element={<ConfirmAccountPage />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/register-company" element={<CompanyRegistrationPage />} />
+                      <Route path="/view-company" element={<ViewCompanyPage />} />
+                      <Route path="/edit-company" element={<EditCompanyPage />} />
+                      <Route path="/clients" element={<ClientUploadPage />} />
+                      <Route path="/dashboard" element={<DashBoardPage />} />
+                      <Route path="/my-company" element={<CompanyScreenDecider />} />
+                      <Route path="/debts" element={<DebtUploadPage />} />
+                      <Route path="/analytics" element={<DashboardAnalytics />} />
+                    </Route>
+                  </Routes>
+                </BrowserRouter>
+              </CompanyProvider>
+            </LocationProvider>
+          </ClientsProvider>
+        </DebtsProvider>
+      </AuthProvider>
+    </CurrencyProvider>
   );
 }
 
