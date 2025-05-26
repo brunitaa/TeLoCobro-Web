@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDebts } from "../../context/debtsContext";
 import Sidebar from "../../components/ui/Sidebar";
 import FileUploadForm from "../../components/clients/FileUploadForm";
@@ -24,6 +24,10 @@ function DebtUploadPage() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterByStatus, searchTerm, sortField, sortOrder]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];

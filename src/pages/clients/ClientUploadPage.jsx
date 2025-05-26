@@ -35,6 +35,10 @@ function ClientUploadPage() {
     loadClients();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterBy, sortField, sortOrder]);
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
