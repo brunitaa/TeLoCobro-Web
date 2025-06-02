@@ -15,7 +15,7 @@ function DashBoardPage() {
       >
         <div className="max-w-3xl">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
-            Dashboard
+            Home
           </h1>
           <p className="text-gray-600 text-base sm:text-lg mb-10">
             Bienvenido al panel de control. Usa la barra lateral para navegar por las funcionalidades disponibles.
