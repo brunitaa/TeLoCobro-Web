@@ -21,6 +21,7 @@ import { DebtsProvider } from "./context/debtsContext.jsx";
 import DebtUploadPage from "./pages/debts/DebtUploadPage.jsx";
 import DashboardAnalytics from "./pages/analytics/DashboardAnalytics.jsx";
 import { CurrencyProvider } from "./context/currencyContext.jsx";
+import ClientProfilePage from "./pages/clients/ClientProfilePage";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
                       <Route path="/my-company" element={<CompanyScreenDecider />} />
                       <Route path="/debts" element={<DebtUploadPage />} />
                       <Route path="/analytics" element={<DashboardAnalytics />} />
+                      <Route path="/clients/:id" element={<ClientProfilePage />} />
                     </Route>
                   </Routes>
                 </BrowserRouter>

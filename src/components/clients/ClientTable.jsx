@@ -3,8 +3,11 @@ import React from "react";
 import ClientRow from "./ClientRow";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
-function ClientTable({ clients, onSelectClient, sortField, sortOrder, onSort }) {
+function ClientTable({ clients, sortField, sortOrder, onSort }) {
+  const navigate = useNavigate();
+
   const renderSortIcon = (field) => {
     if (sortField !== field) return null;
     return (
@@ -61,7 +64,7 @@ function ClientTable({ clients, onSelectClient, sortField, sortOrder, onSort }) 
               key={client._id}
               client={client}
               index={idx}
-              onClick={() => onSelectClient(client)}
+              onClick={() => navigate(`/clients/${client._id}`)}
             />
           ))}
         </tbody>
