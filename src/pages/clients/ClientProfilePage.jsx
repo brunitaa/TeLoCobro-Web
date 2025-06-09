@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/ui/Sidebar";
 import ClientProfileHeader from "../../components/clients/ClientProfileHeader";
+import ClientCharts from "../../components/clients/ClientCharts";
 import DebtTable from "../../components/debts/DebtTable";
 import Pagination from "../../components/clients/Pagination";
 import { useClients } from "../../context/clientsContext";
@@ -37,7 +38,7 @@ function ClientProfilePage() {
   }, [id]);
 
   useEffect(() => {
-    setCurrentPage(1); // Reiniciar al cambiar orden o dataset
+    setCurrentPage(1);
   }, [debts, sortField, sortOrder]);
 
   const handleSort = (field) => {
@@ -74,6 +75,13 @@ function ClientProfilePage() {
 
         <section>
           <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+            Gráficas de Deudas
+          </h2>
+          <ClientCharts debts={debts} />
+        </section>
+
+        <section>
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
             Deudas Asociadas
           </h2>
 
@@ -85,11 +93,13 @@ function ClientProfilePage() {
             onSort={handleSort}
           />
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </section>
       </main>
     </div>
