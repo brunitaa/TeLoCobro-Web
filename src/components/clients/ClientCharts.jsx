@@ -28,9 +28,6 @@ const ClientCharts = ({ debts }) => {
 
   if (!debts || debts.length === 0) return null;
 
-  const convert = (value) =>
-    currency === "USD" ? parseFloat((value / 7).toFixed(2)) : value;
-
   const statusData = debts.reduce((acc, debt) => {
     const estado = debt.status;
     const found = acc.find((item) => item.name === estado);
@@ -47,7 +44,7 @@ const ClientCharts = ({ debts }) => {
       month: "short",
       year: "numeric",
     });
-    const valor = convert(parseFloat(debt.outstanding || 0));
+    const valor = parseFloat(debt.outstanding || 0);
     const found = acc.find((item) => item.name === mes);
     if (found) {
       found.value += valor;
@@ -59,7 +56,7 @@ const ClientCharts = ({ debts }) => {
 
   const amountByStatus = debts.reduce((acc, debt) => {
     const estado = debt.status;
-    const valor = convert(parseFloat(debt.outstanding || 0));
+    const valor = parseFloat(debt.outstanding || 0);
     const found = acc.find((item) => item.name === estado);
     if (found) {
       found.value += valor;
@@ -120,7 +117,7 @@ const ClientCharts = ({ debts }) => {
                 <YAxis />
                 <Tooltip
                   formatter={(v) =>
-                    `${currency === "USD" ? "$" : "Bs. "} ${v}`
+                    `${currency === "USD" ? "$" : "Bs. "} ${v.toFixed(2)}`
                   }
                 />
                 <Legend />
@@ -150,7 +147,7 @@ const ClientCharts = ({ debts }) => {
                 <YAxis />
                 <Tooltip
                   formatter={(v, name) => [
-                    `${currency === "USD" ? "$" : "Bs. "} ${v}`,
+                    `${currency === "USD" ? "$" : "Bs. "} ${v.toFixed(2)}`,
                     ESTADOS_ES[name] || name,
                   ]}
                 />
