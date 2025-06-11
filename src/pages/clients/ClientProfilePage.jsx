@@ -3,32 +3,31 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/ui/Sidebar";
 import ClientProfileHeader from "../../components/clients/ClientProfileHeader";
+import ClientKPISection from "../../components/clients/ClientKPISection";
 import ClientCharts from "../../components/clients/ClientCharts";
 import DebtTable from "../../components/debts/DebtTable";
 import Pagination from "../../components/clients/Pagination";
 import { useClients } from "../../context/clientsContext";
+import { useCurrency } from "../../context/currencyContext";
 import { getDebtsByClientRequest } from "../../api/debts";
 
 function ClientProfilePage() {
   const { id } = useParams();
   const { getClientById } = useClients();
+  const { currency } = useCurrency();
 
   const [client, setClient] = useState(null);
   const [debts, setDebts] = useState([]);
   const [sortField, setSortField] = useState("due_date");
   const [sortOrder, setSortOrder] = useState("asc");
-
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
   useEffect(() => {
     async function fetchData() {
       const clientRes = await getClientById(id);
-      console.log("Respuesta getClientById:", clientRes);
-
       const clientData =
         clientRes?.data?.client || clientRes?.client || clientRes;
-
       setClient(clientData || {});
 
       const debtRes = await getDebtsByClientRequest(id);
@@ -73,6 +72,15 @@ function ClientProfilePage() {
 
         <ClientProfileHeader client={client} />
 
+        {/* KPIs en tiempo real */}
+        <section>
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+            Indicadores Clave
+          </h2>
+          <ClientKPISection debts={debts} currency={currency} />
+        </section>
+
+        {/* Gráficas */}
         <section>
           <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
             Gráficas de Deudas
@@ -80,6 +88,7 @@ function ClientProfilePage() {
           <ClientCharts debts={debts} />
         </section>
 
+        {/* Tabla */}
         <section>
           <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
             Deudas Asociadas
