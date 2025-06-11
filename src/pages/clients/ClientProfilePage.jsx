@@ -22,19 +22,26 @@ function ClientProfilePage() {
 
   useEffect(() => {
     async function fetchData() {
-      const clientRes = await getClientById(id);
-      const clientData =
-        clientRes?.data?.client || clientRes?.client || clientRes;
-      setClient(clientData || {});
+      try {
+        const clientRes = await getClientById(id);
+        const clientData =
+          clientRes?.data?.client || clientRes?.client || clientRes;
+        setClient(clientData || {});
 
-      const debtRes = await getDebtsByClientRequest(id);
-      const debtData = debtRes?.data?.data?.debts || [];
-      setDebts(debtData);
+        const debtRes = await getDebtsByClientRequest(id);
+        const debtData = debtRes?.data?.data?.debts || [];
+        setDebts(debtData);
 
-      // Detectar moneda predominante para inicializar el tab
-      const usdCount = debtData.filter((d) => d.currency === "USD").length;
-      const bsCount = debtData.length - usdCount;
-      setCurrency(usdCount > bsCount ? "USD" : "BS");
+        // Detectar moneda predominante para inicializar el tab
+        const usdCount = debtData.filter((d) => d.currency === "USD").length;
+        const bsCount = debtData.filter((d) => d.currency === "BS").length;
+
+        if (usdCount > bsCount) setCurrency("USD");
+        else if (bsCount > 0) setCurrency("BS");
+        else setCurrency("BS"); // fallback en caso de sin moneda
+      } catch (error) {
+        console.error("Error al cargar datos del cliente:", error);
+      }
     }
 
     fetchData();

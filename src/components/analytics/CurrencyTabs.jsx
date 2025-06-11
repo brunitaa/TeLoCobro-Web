@@ -6,6 +6,7 @@ import ClientKPISection from "../clients/ClientKPISection";
 import ClientCharts from "../clients/ClientCharts";
 import DebtTable from "../debts/DebtTable";
 import Pagination from "../clients/Pagination";
+import EmptyState from "../ui/EmptyState";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -72,39 +73,48 @@ export default function CurrencyTabs({
       <Tab.Panels className="mt-2 space-y-12">
         {tabs.map((tab) => (
           <Tab.Panel key={tab.id}>
-            <section>
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-                Indicadores Clave
-              </h2>
-              <ClientKPISection debts={groupedDebts[tab.id]} currency={tab.id} />
-            </section>
-
-            <section>
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-                Gráficas de Deudas
-              </h2>
-              <ClientCharts debts={groupedDebts[tab.id]} currency={tab.id} />
-            </section>
-
-            <section>
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-                Deudas Asociadas
-              </h2>
-              <DebtTable
-                debts={paginatedDebts[tab.id]}
-                onSelectDebt={() => {}}
-                sortField={sortField}
-                sortOrder={sortOrder}
-                onSort={onSort}
+            {groupedDebts[tab.id].length === 0 ? (
+              <EmptyState
+                title="Sin deudas registradas"
+                subtitle={`No se encontraron deudas en ${tab.id === "USD" ? "dólares" : "bolivianos"}.`}
               />
-              {totalPages[tab.id] > 1 && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages[tab.id]}
-                  onPageChange={setCurrentPage}
-                />
-              )}
-            </section>
+            ) : (
+              <>
+                <section>
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+                    Indicadores Clave
+                  </h2>
+                  <ClientKPISection debts={groupedDebts[tab.id]} currency={tab.id} />
+                </section>
+
+                <section>
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+                    Gráficas de Deudas
+                  </h2>
+                  <ClientCharts debts={groupedDebts[tab.id]} currency={tab.id} />
+                </section>
+
+                <section>
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+                    Deudas Asociadas
+                  </h2>
+                  <DebtTable
+                    debts={paginatedDebts[tab.id]}
+                    onSelectDebt={() => {}}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={onSort}
+                  />
+                  {totalPages[tab.id] > 1 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages[tab.id]}
+                      onPageChange={setCurrentPage}
+                    />
+                  )}
+                </section>
+              </>
+            )}
           </Tab.Panel>
         ))}
       </Tab.Panels>
