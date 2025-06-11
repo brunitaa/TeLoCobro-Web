@@ -5,7 +5,7 @@ const CurrencyContext = createContext();
 export const useCurrency = () => useContext(CurrencyContext);
 
 export const CurrencyProvider = ({ children }) => {
-  const [currency, setCurrency] = useState("BS"); // valores posibles: "BS", "USD", "AMBAS"
+  const [currency, setCurrency] = useState("BS"); // valores posibles: "BS", "USD"
 
   return (
     <CurrencyContext.Provider value={{ currency, setCurrency }}>

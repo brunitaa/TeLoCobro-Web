@@ -3,10 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/ui/Sidebar";
 import ClientProfileHeader from "../../components/clients/ClientProfileHeader";
-import ClientKPISection from "../../components/clients/ClientKPISection";
-import ClientCharts from "../../components/clients/ClientCharts";
-import DebtTable from "../../components/debts/DebtTable";
-import Pagination from "../../components/clients/Pagination";
+import CurrencyTabs from "../../components/analytics/CurrencyTabs";
 import { useClients } from "../../context/clientsContext";
 import { useCurrency } from "../../context/currencyContext";
 import { getDebtsByClientRequest } from "../../api/debts";
@@ -14,7 +11,7 @@ import { getDebtsByClientRequest } from "../../api/debts";
 function ClientProfilePage() {
   const { id } = useParams();
   const { getClientById } = useClients();
-  const { currency } = useCurrency();
+  const { setCurrency, currency } = useCurrency();
 
   const [client, setClient] = useState(null);
   const [debts, setDebts] = useState([]);
@@ -31,8 +28,15 @@ function ClientProfilePage() {
       setClient(clientData || {});
 
       const debtRes = await getDebtsByClientRequest(id);
-      setDebts(debtRes?.data?.data?.debts || []);
+      const debtData = debtRes?.data?.data?.debts || [];
+      setDebts(debtData);
+
+      // Detectar moneda predominante para inicializar el tab
+      const usdCount = debtData.filter((d) => d.currency === "USD").length;
+      const bsCount = debtData.length - usdCount;
+      setCurrency(usdCount > bsCount ? "USD" : "BS");
     }
+
     fetchData();
   }, [id]);
 
@@ -53,12 +57,6 @@ function ClientProfilePage() {
     setDebts(sorted);
   };
 
-  const totalPages = Math.ceil(debts.length / pageSize);
-  const paginatedDebts = debts.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
   if (!client) return <div className="p-6">Cargando...</div>;
 
   return (
@@ -72,44 +70,18 @@ function ClientProfilePage() {
 
         <ClientProfileHeader client={client} />
 
-        {/* KPIs en tiempo real */}
-        <section>
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-            Indicadores Clave
-          </h2>
-          <ClientKPISection debts={debts} currency={currency} />
-        </section>
-
-        {/* Gráficas */}
-        <section>
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-            Gráficas de Deudas
-          </h2>
-          <ClientCharts debts={debts} />
-        </section>
-
-        {/* Tabla */}
-        <section>
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
-            Deudas Asociadas
-          </h2>
-
-          <DebtTable
-            debts={paginatedDebts}
-            onSelectDebt={() => {}}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-          />
-
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </section>
+        {/* Sección de Tabs para monedas */}
+        <CurrencyTabs
+          debts={debts}
+          currency={currency}
+          setCurrency={setCurrency}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onSort={handleSort}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageSize={pageSize}
+        />
       </main>
     </div>
   );

@@ -5,8 +5,11 @@ import {
   FaExclamationCircle,
 } from "react-icons/fa";
 import KPICard from "/src/components/clients/KpiCard.jsx";
+import { useCurrency } from "/src/context/currencyContext";
 
-const ClientKPISection = ({ debts, currency }) => {
+const ClientKPISection = ({ debts }) => {
+  const { currency } = useCurrency();
+
   if (!debts || debts.length === 0) return null;
 
   const formatCurrency = (value) =>
@@ -14,16 +17,13 @@ const ClientKPISection = ({ debts, currency }) => {
       ? `$${(value / 7).toFixed(2)}`
       : `Bs. ${value.toLocaleString("es-BO")}`;
 
-  // 1. Total de deudas del cliente
   const totalDebts = debts.length;
 
-  // 2. Monto total adeudado (solo pendientes o vencidas)
   const totalOutstanding = debts.reduce(
     (acc, d) => acc + parseFloat(d.outstanding || 0),
     0
   );
 
-  // 3. Índice de morosidad
   const overdueCount = debts.filter((d) => d.status === "overdue").length;
   const morosityIndex =
     totalDebts > 0 ? ((overdueCount / totalDebts) * 100).toFixed(1) : 0;
