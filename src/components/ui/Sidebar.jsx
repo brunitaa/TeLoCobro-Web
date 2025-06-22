@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   BarChart3,
+  Bell,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -102,6 +103,12 @@ export default function Sidebar() {
                     icon={<BarChart3 size={18} />}
                     text="Análisis"
                     active={pathname === "/analytics"}
+                  />
+                  <SidebarLink
+                    to="/notifications"
+                    icon={<Bell size={18} />}
+                    text="Notificaciones"
+                    active={pathname === "/notifications"}
                   />
 
                   <span className="flex items-center gap-2 text-gray-400 cursor-not-allowed">

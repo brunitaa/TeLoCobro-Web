@@ -22,6 +22,7 @@ import DebtUploadPage from "./pages/debts/DebtUploadPage.jsx";
 import DashboardAnalytics from "./pages/analytics/DashboardAnalytics.jsx";
 import { CurrencyProvider } from "./context/currencyContext.jsx";
 import ClientProfilePage from "./pages/clients/ClientProfilePage";
+import NotificationPage from "./pages/notifications/NotificationPage";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
                       <Route path="/debts" element={<DebtUploadPage />} />
                       <Route path="/analytics" element={<DashboardAnalytics />} />
                       <Route path="/clients/:id" element={<ClientProfilePage />} />
+                      <Route path="/notifications" element={<NotificationPage />} />
                     </Route>
                   </Routes>
                 </BrowserRouter>
