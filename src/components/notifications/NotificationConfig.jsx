@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   getNotificationConfig,
   enableNotifications,
@@ -7,42 +7,47 @@ import {
 } from "../../api/reminders";
 import { toast } from "react-hot-toast";
 
-export default function NotificationConfig() {
+export default function NotificationConfig({ isActive }) {
   const [days, setDays] = useState("3");
   const [enabled, setEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await getNotificationConfig();
-        const cfg = res.data?.data?.config;
-        if (cfg) {
-          setDays(String(cfg.days_before_due));
-          setEnabled(cfg.status === "enabled");
-        }
-      } catch (err) {
-        if (err.response?.status !== 404) {
-          console.error("❌ Error al cargar configuración:", err);
-          toast.error("No se pudo cargar la configuración");
-        }
-      } finally {
-        setLoading(false);
+  const loadConfig = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await getNotificationConfig();
+      const cfg = res.data?.data?.config;
+      if (cfg) {
+        setDays(String(cfg.days_before_due));
+        setEnabled(cfg.status === "enabled");
       }
-    })();
+    } catch (err) {
+      if (err.response?.status !== 404) {
+        console.error("❌ Error al cargar configuración:", err);
+        toast.error("⚠️ No se pudo cargar la configuración");
+      }
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    if (isActive) loadConfig();
+  }, [isActive, loadConfig]);
 
   const handleToggle = async () => {
     try {
-      if (enabled) await disableNotifications();
-      else await enableNotifications();
-      setEnabled(!enabled);
-      toast.success(
-        `🟢 Notificaciones ${enabled ? "deshabilitadas" : "habilitadas"}`
-      );
+      if (enabled) {
+        await disableNotifications();
+        toast.success("🔴 Notificaciones deshabilitadas");
+      } else {
+        await enableNotifications();
+        toast.success("🟢 Notificaciones habilitadas");
+      }
+      await loadConfig();
     } catch (err) {
       console.error("❌ Error al cambiar estado:", err);
-      toast.error("Error al cambiar estado de notificaciones");
+      toast.error("⚠️ Error al cambiar estado de notificaciones");
     }
   };
 
@@ -51,11 +56,14 @@ export default function NotificationConfig() {
     try {
       await setNotificationFrequency({ days_before_due: Number(days) });
       toast.success("🟢 Frecuencia actualizada");
+      await loadConfig();
     } catch (err) {
       console.error("❌ Error al actualizar frecuencia:", err);
-      toast.error("Error al actualizar la frecuencia");
+      toast.error("⚠️ Error al actualizar la frecuencia");
     }
   };
+
+  if (!isActive) return null;
 
   if (loading) {
     return (
@@ -67,7 +75,7 @@ export default function NotificationConfig() {
 
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-8 space-y-8">
-      <h2 className="text-xl font-semibold text-gray-800">
+      <h2 className="text-2xl font-semibold text-gray-800">
         Configuración de notificaciones
       </h2>
 
@@ -78,7 +86,9 @@ export default function NotificationConfig() {
         <button
           onClick={handleToggle}
           className={`px-5 py-2 rounded-lg text-white font-medium transition ${
-            enabled ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+            enabled
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-green-500 hover:bg-green-600"
           }`}
         >
           {enabled ? "Deshabilitar" : "Habilitar"}

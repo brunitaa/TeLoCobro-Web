@@ -1,1 +1,2 @@
 export const API_URL = import.meta.env.VITE_API_URL|| "https://telocobro-api.onrender.com/api/v1";
+export const RISK_API_URL = import.meta.env.VITE_PREDICT_URL || "https://risk-model-api-j5ksinod3q-uc.a.run.app";

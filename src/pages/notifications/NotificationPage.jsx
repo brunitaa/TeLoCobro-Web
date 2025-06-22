@@ -5,7 +5,7 @@ import NotificationConfig from "../../components/notifications/NotificationConfi
 import NotificationList from "../../components/notifications/NotificationList";
 import Sidebar from "../../components/ui/Sidebar";
 
-function NotificationPage() {
+export default function NotificationPage() {
   const tabs = ["Historial", "Configuración", "Enviar Notificación"];
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -42,7 +42,8 @@ function NotificationPage() {
                 <NotificationList />
               </Tab.Panel>
               <Tab.Panel>
-                <NotificationConfig />
+                {/* recarga al mostrarse */}
+                <NotificationConfig isActive={selectedIndex === 1} />
               </Tab.Panel>
               <Tab.Panel>
                 <NotificationForm />
@@ -54,5 +55,3 @@ function NotificationPage() {
     </div>
   );
 }
-
-export default NotificationPage;
