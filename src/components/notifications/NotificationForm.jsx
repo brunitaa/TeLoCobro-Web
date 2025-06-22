@@ -21,8 +21,8 @@ export default function NotificationForm() {
       setTimeout(() => setShowSuccess(false), 2000);
       setForm({ sent_to: "", subject: "", content: "" });
     } catch (err) {
-      console.error("❌ Error al enviar notificación:", err);
-      toast.error("🔴 Error al enviar la notificación");
+      console.error("Error al enviar notificación:", err);
+      toast.error("Error al enviar la notificación");
     }
   };
 

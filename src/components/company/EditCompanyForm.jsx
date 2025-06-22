@@ -29,7 +29,6 @@ const EditCompanyForm = () => {
     city_id: "",
   });
 
-  // Precargar datos
   useEffect(() => {
     const company = companies[0];
     if (!company) return;
@@ -39,7 +38,7 @@ const EditCompanyForm = () => {
       nit: company.nit || "",
       legal_name: company.legal_name || "",
       description: company.description || "",
-      city_id: "", // se actualiza luego
+      city_id: "", 
     });
 
     let countryId = company.location?.country;
@@ -74,7 +73,7 @@ const EditCompanyForm = () => {
     }
   }, [companies, cities]);
 
-  // Handlers
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 

@@ -23,8 +23,8 @@ export default function NotificationConfig({ isActive }) {
       }
     } catch (err) {
       if (err.response?.status !== 404) {
-        console.error("❌ Error al cargar configuración:", err);
-        toast.error("⚠️ No se pudo cargar la configuración");
+        console.error("Error al cargar configuración:", err);
+        toast.error("No se pudo cargar la configuración");
       }
     } finally {
       setLoading(false);
@@ -39,15 +39,15 @@ export default function NotificationConfig({ isActive }) {
     try {
       if (enabled) {
         await disableNotifications();
-        toast.success("🔴 Notificaciones deshabilitadas");
+        toast.success("Notificaciones deshabilitadas");
       } else {
         await enableNotifications();
-        toast.success("🟢 Notificaciones habilitadas");
+        toast.success("Notificaciones habilitadas");
       }
       await loadConfig();
     } catch (err) {
-      console.error("❌ Error al cambiar estado:", err);
-      toast.error("⚠️ Error al cambiar estado de notificaciones");
+      console.error("Error al cambiar estado:", err);
+      toast.error("Error al cambiar estado de notificaciones");
     }
   };
 
@@ -55,11 +55,11 @@ export default function NotificationConfig({ isActive }) {
     e.preventDefault();
     try {
       await setNotificationFrequency({ days_before_due: Number(days) });
-      toast.success("🟢 Frecuencia actualizada");
+      toast.success("Frecuencia actualizada");
       await loadConfig();
     } catch (err) {
-      console.error("❌ Error al actualizar frecuencia:", err);
-      toast.error("⚠️ Error al actualizar la frecuencia");
+      console.error("Error al actualizar frecuencia:", err);
+      toast.error("Error al actualizar la frecuencia");
     }
   };
 

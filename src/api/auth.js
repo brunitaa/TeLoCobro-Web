@@ -1,6 +1,5 @@
 import axios from "./axios";
 
-// Solicitudes de registro y autenticación
 export const registerRequest = async (user) => axios.post(`/auth/users/sign-up`, user);
 export const loginRequest = async (user) => axios.post(`/auth/users/sign-in`, user);
 export const verifyTokenRequest = async () => axios.get(`/auth/users/status`);

@@ -1,4 +1,3 @@
-// src/api/clients.js
 import axios from "./axios";
 
 export const uploadDebtsCSVRequest = async (formData) =>

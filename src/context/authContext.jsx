@@ -17,7 +17,6 @@ export const useAuth = () => {
   return context;
 };
 
-//MANEJAR ERRORES
 const parseErrorMessage = (data) => {
   if (!data) return ["Error desconocido."];
 
@@ -62,8 +61,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await registerRequest(userData);
       if (res.status === 200) {
-        // No autenticar aún
-        // Deja que el usuario confirme su cuenta primero
         return res.data;
       }
     } catch (error) {

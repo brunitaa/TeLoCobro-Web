@@ -1,9 +1,6 @@
 import React from "react";
 import classNames from "classnames";
 
-/**
- * prediction: 0 = Bajo, 2 = Medio, 1 = Alto
- */
 export default function RiskBadge({ prediction }) {
   const labels = { 0: "Bajo riesgo", 2: "Medio riesgo", 1: "Alto riesgo" };
   const colors = {

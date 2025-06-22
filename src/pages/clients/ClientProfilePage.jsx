@@ -21,29 +21,24 @@ export default function ClientProfilePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  // Estados para riesgo
-  const [riskPrediction, setRiskPrediction] = useState(null);   // 0=Bajo,2=Medio,1=Alto
-  const [riskProbability, setRiskProbability] = useState(0);    // 0..1
+  const [riskPrediction, setRiskPrediction] = useState(null);   
+  const [riskProbability, setRiskProbability] = useState(0);   
 
   useEffect(() => {
     async function fetchData() {
       try {
-        // 1) Traer cliente
         const clientRes = await getClientById(id);
         const clientData = clientRes?.data?.client || clientRes;
         setClient(clientData || {});
 
-        // 2) Traer deudas
         const debtRes = await getDebtsByClientRequest(id);
         const debtData = debtRes?.data?.data?.debts || [];
         setDebts(debtData);
 
-        // 3) Inicializar moneda
         const usdCount = debtData.filter((d) => d.currency === "USD").length;
         const bsCount = debtData.filter((d) => d.currency === "BS").length;
         setCurrency(usdCount > bsCount ? "USD" : "BS");
 
-        // 4) Calcular métricas para IA
         const debtCount = debtData.length;
         const totalDebtBOB = debtData.reduce((sum, d) => sum + (d.outstanding || 0), 0);
 
@@ -58,7 +53,6 @@ export default function ClientProfilePage() {
               .reduce((a, b) => a + b, 0) / paidDebts.length
           : 0;
 
-        // 5) Llamada a la API de riesgo
         const { data } = await predictRisk({
           totalDebtBOB,
           totalPendingDebtBOB,
@@ -67,20 +61,15 @@ export default function ClientProfilePage() {
           debtCount,
         });
 
-        // ——————————————————————————————
-        // 6) Clasificación “pura” de la IA
         const prob100 = data.probability * 100;
         let pred;
         if (prob100 <= 40) pred = 0;      // Bajo
         else if (prob100 <= 70) pred = 2; // Medio
         else pred = 1;                    // Alto
 
-        // 7) Regla de negocio adicional sobre % de morosidad
         if (paymentDelayRate >= 1) {
-          // 100% deudas vencidas → Alto riesgo
           pred = 1;
         } else if (paymentDelayRate >= 0.5) {
-          // ≥50% vencidas → al menos Medio riesgo
           pred = Math.max(pred, 2);
         }
 
@@ -94,7 +83,6 @@ export default function ClientProfilePage() {
     fetchData();
   }, [id, getClientById, setCurrency]);
 
-  // Reset de paginación al cambiar orden o datos
   useEffect(() => {
     setCurrentPage(1);
   }, [debts, sortField, sortOrder]);

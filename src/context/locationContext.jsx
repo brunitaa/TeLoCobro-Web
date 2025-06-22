@@ -1,5 +1,5 @@
 import { useEffect, useState, createContext, useContext } from "react";
-import { countriesRequest, statesRequest, citiesRequest } from "../api/location"; // Asegúrate de que estas funciones están bien implementadas
+import { countriesRequest, statesRequest, citiesRequest } from "../api/location"; 
 import React from 'react';
 
 const LocationContext = createContext();
@@ -19,12 +19,11 @@ export const LocationProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState([]);
 
-  // Fetch countries
   useEffect(() => {
     const loadCountries = async () => {
       try {
         const response = await countriesRequest();
-        console.log(response.data.data); // Verifica que los países estén llegando correctamente
+        console.log(response.data.data);
         setCountries(response.data.data);
       } catch (error) {
         console.error("Error fetching countries", error);
@@ -36,7 +35,6 @@ export const LocationProvider = ({ children }) => {
     loadCountries();
   }, []);
 
-  // Fetch states when a country is selected
   useEffect(() => {
     if (selectedCountry) {
       const loadStates = async () => {
@@ -50,11 +48,10 @@ export const LocationProvider = ({ children }) => {
       };
       loadStates();
     } else {
-      setStates([]); // Reset states when no country is selected
+      setStates([]);
     }
   }, [selectedCountry]);
 
-  // Fetch cities when a state is selected
   useEffect(() => {
     if (selectedState) {
       const loadCities = async () => {
@@ -68,7 +65,7 @@ export const LocationProvider = ({ children }) => {
       };
       loadCities();
     } else {
-      setCities([]); // Reset cities when no state is selected
+      setCities([]);
     }
   }, [selectedState]);
 
@@ -82,7 +79,7 @@ export const LocationProvider = ({ children }) => {
         selectedState,
         setSelectedCountry,
         setSelectedState,
-        setCities, // Exportando setCities para su uso
+        setCities,
         loading,
         errors,
       }}

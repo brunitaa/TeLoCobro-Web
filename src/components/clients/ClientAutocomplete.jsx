@@ -10,7 +10,7 @@ function ClientAutocomplete({ value, onChange }) {
 
   useEffect(() => {
     if (!Array.isArray(clients) || clients.length === 0) {
-      loadClients(); // solo si no hay clientes cargados
+      loadClients();
     }
   }, [clients, loadClients]);
 
