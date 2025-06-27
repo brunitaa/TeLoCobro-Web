@@ -15,9 +15,14 @@ const InfoItem = ({ icon, label, value }) => (
 export default function ClientProfileHeader({ client, riskPrediction }) {
   return (
     <section className="bg-white p-6 rounded-xl shadow border border-gray-200 space-y-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <h2 className="text-2xl font-bold text-blue-700">Datos del Cliente</h2>
-        <RiskBadge prediction={riskPrediction} />
+      <div className="flex flex-col items-end sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h2 className="text-2xl font-bold text-blue-700 self-start sm:self-auto">
+          Datos del Cliente
+        </h2>
+        <RiskBadge
+          prediction={riskPrediction}
+          className="text-sm sm:text-base"
+        />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -76,7 +76,9 @@ export default function CurrencyTabs({
             {groupedDebts[tab.id].length === 0 ? (
               <EmptyState
                 title="Sin deudas registradas"
-                subtitle={`No se encontraron deudas en ${tab.id === "USD" ? "dólares" : "bolivianos"}.`}
+                subtitle={`No se encontraron deudas en ${
+                  tab.id === "USD" ? "dólares" : "bolivianos"
+                }.`}
               />
             ) : (
               <>
@@ -88,14 +90,14 @@ export default function CurrencyTabs({
                 </section>
 
                 <section>
-                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mt-6 mb-4">
                     Gráficas de Deudas
                   </h2>
                   <ClientCharts debts={groupedDebts[tab.id]} currency={tab.id} />
                 </section>
 
                 <section>
-                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mt-6 mb-4">
                     Deudas Asociadas
                   </h2>
                   <DebtTable

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   PieChart,
   Pie,
@@ -15,54 +15,92 @@ import {
 import { useCurrency } from "/src/context/currencyContext";
 
 const COLORS = ["#3B82F6", "#9333EA", "#FACC15", "#EF4444", "#10B981"];
-
 const ESTADOS_ES = {
-  pending: "Pendiente",
-  paid: "Pagado",
-  overdue: "Vencido",
-  id: "Desconocido",
+  pending: "Pendientes",
+  paid:    "Pagadas",
+  overdue: "Vencidas",
+};
+
+// Label exterior (escritorio)
+const renderDesktopLabel = ({ cx, cy, midAngle, outerRadius, percent }) => {
+  const RAD = Math.PI / 180;
+  const r = outerRadius + 15;
+  const x = cx + r * Math.cos(-midAngle * RAD);
+  const y = cy + r * Math.sin(-midAngle * RAD);
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#111827"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={12}
+      fontWeight={500}
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
+// Label interno (móvil)
+const renderMobileLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+  const RAD = Math.PI / 180;
+  const radius = innerRadius + (outerRadius - innerRadius) / 2;
+  const x = cx + radius * Math.cos(-midAngle * RAD);
+  const y = cy + radius * Math.sin(-midAngle * RAD);
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#fff"
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontSize={12}
+      fontWeight={500}
+    >
+      {(percent * 100).toFixed(0)}%
+    </text>
+  );
 };
 
 const ClientCharts = ({ debts }) => {
   const { currency } = useCurrency();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
-  if (!debts || debts.length === 0) return null;
+  // Detectar mobile/desktop
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
+  // Datos de estado
   const statusData = debts.reduce((acc, debt) => {
     const estado = debt.status;
-    const found = acc.find((item) => item.name === estado);
-    if (found) {
-      found.value += 1;
-    } else {
-      acc.push({ name: estado, value: 1 });
-    }
+    const found = acc.find((i) => i.name === estado);
+    if (found) found.value += 1;
+    else acc.push({ name: estado, value: 1 });
     return acc;
   }, []);
 
+  // Datos mes y monto por estado siguen igual…
   const monthData = debts.reduce((acc, debt) => {
     const mes = new Date(debt.issue_date).toLocaleString("es-ES", {
       month: "short",
       year: "numeric",
     });
     const valor = parseFloat(debt.outstanding || 0);
-    const found = acc.find((item) => item.name === mes);
-    if (found) {
-      found.value += valor;
-    } else {
-      acc.push({ name: mes, value: valor });
-    }
+    const found = acc.find((i) => i.name === mes);
+    if (found) found.value += valor;
+    else acc.push({ name: mes, value: valor });
     return acc;
   }, []);
-
   const amountByStatus = debts.reduce((acc, debt) => {
     const estado = debt.status;
     const valor = parseFloat(debt.outstanding || 0);
-    const found = acc.find((item) => item.name === estado);
-    if (found) {
-      found.value += valor;
-    } else {
-      acc.push({ name: estado, value: valor });
-    }
+    const found = acc.find((i) => i.name === estado);
+    if (found) found.value += valor;
+    else acc.push({ name: estado, value: valor });
     return acc;
   }, []);
 
@@ -84,24 +122,36 @@ const ClientCharts = ({ debts }) => {
                   data={statusData}
                   dataKey="value"
                   nameKey="name"
-                  outerRadius="80%"
-                  innerRadius="50%"
-                  label={({ name }) => ESTADOS_ES[name] || name}
-                  paddingAngle={5}
+                  innerRadius={isMobile ? 50 : 0}
+                  outerRadius={isMobile ? 80 : "80%"}
+                  paddingAngle={4}
+                  label={isMobile ? renderMobileLabel : renderDesktopLabel}
+                  labelLine={false}
                 >
-                  {statusData.map((_, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  {statusData.map((entry, idx) => (
+                    <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value, name) => [
-                    `${value} deudas`,
-                    ESTADOS_ES[name] || name,
-                  ]}
+                  formatter={(value, name) => [`${value} deudas`, ESTADOS_ES[name] || name]}
                 />
+                {!isMobile && <Legend verticalAlign="bottom" iconType="circle" />}
               </PieChart>
             </ResponsiveContainer>
           </div>
+          {isMobile && (
+            <div className="mt-4 flex justify-center gap-6">
+              {statusData.map((entry, idx) => (
+                <div key={idx} className="flex items-center space-x-2 text-sm">
+                  <span
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: COLORS[idx % COLORS.length] }}
+                  />
+                  <span className="text-gray-700">{ESTADOS_ES[entry.name]}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* 2. Monto por Mes */}
